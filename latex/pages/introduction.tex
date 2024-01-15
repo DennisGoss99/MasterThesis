@@ -1,0 +1,32 @@
+
+In this thesis we will investigate the use of traditional Transformer model to generate texture asset to use as floor texture in e.g in video games. Transformers are usally used to ... . But in this thesis the focus is to use them to generate the next Pixel in a texture. Multiple different dataset of textures will be used from the internet to train the model. The final develloped models will be trained on a GPU cluster in göthingen. The models will be evaluated on a set of metrics and the results will be compared to other models.
+
+\subsection{Related work}
+    
+\subsection{Data}
+    
+    \subsubsection{Data retrieval}
+        In the internet you can find a lot of textures. But not all of them are suitable for this task. The textures should be seamless, shouldn't contain shadows and should not contain any objects. Textures of Floors are used like carpets, tiles, wood, concret and many more. I used to approches to get the data for this thesis.
+        
+        \begin{itemize}
+            \item Web scraping
+            The textures from the internet are sourced from multiple free texture provider like textures.com, texturehaven.com, ... . Most of the websites have the functionallity to download on texture at the time, so often multiple scripts are used to generate a list of suitable Textures and then to download them. The scripts are develloped with UiPath and Python. 
+            
+            \item Video game textures
+            
+            The second approche is to use textures from video games. The advantage of this approche is that the textures are already seamless and often of high quality and quantity. The disadvantage is that the textures are often very repetitive and. To get the textures a downwards facing recoring of the game is made and then the textures are extracted from the video. The major problem with this approch is that the shadows and all Ui Elements (Hud elemetns) need to be disabled in the game. This is unfortially not always possible.
+
+        \end{itemize}
+
+    \subsubsection{Data cleaning}
+        (remove duplicates, remove non textures, ...)
+    \subsubsection{Patterns in the data}
+        (color, size, ...)
+    \subsubsection{Sync data with gö}
+
+
+\subsection{Training process}
+    (gpu cluster göthingen, my GPU, ...)
+
+\subsection{Models}
+    (LLMs, basic idea, roll model, spiral model)
