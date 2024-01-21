@@ -14,21 +14,20 @@ jobs:
   build_latex:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Check out latest version of main branch
         uses: actions/checkout@v3
 
-      # Neuer Schritt: Anzeigen der Struktur des Arbeitsverzeichnisses
-      - name: List files
-        run: ls -R
-        
+      - name: Change to LaTeX directory
+        run: cd latex
+
       - name: Github Action for LaTeX
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: latex/masterthesis.tex
+          root_file: masterthesis.tex
           glob_root_file: true
+
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
