@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: DSE-Protfolio.pdf
+          path: masterthesis.pdf
