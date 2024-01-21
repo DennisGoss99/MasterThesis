@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Check out latest version of main branch
         uses: actions/checkout@v3
+
+      # Neuer Schritt: Anzeigen der Struktur des Arbeitsverzeichnisses
+      - name: List files
+        run: ls -R
+        
       - name: Github Action for LaTeX
         uses: xu-cheng/latex-action@v2
         with:
@@ -28,4 +33,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: masterthesis.pdf
+          path: latex/masterthesis.pdf
