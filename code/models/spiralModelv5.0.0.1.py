@@ -21,7 +21,7 @@ torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
 
-BATCH_SIZE = 16
+BATCH_SIZE = 8
 
 IMAGE_SIZE = 64
 BLOCK_SIZE = IMAGE_SIZE * IMAGE_SIZE - 1
@@ -260,7 +260,7 @@ transform = transforms.Compose(
 
 combined_dataset_Nr = 2
 
-combined_dataset = torch.utils.data.ConcatDataset([datasets.ImageFolder(root="C:/Users/Dennis/Desktop/Pro/AITest/imgGen/Data/Data_CSGO_Floor", transform=transform) for _ in range(combined_dataset_Nr)])
+combined_dataset = torch.utils.data.ConcatDataset([datasets.ImageFolder(root="/scratch/usr/nwmdgthk/allData/Data/Data_CSGO_Floor", transform=transform) for _ in range(combined_dataset_Nr)])
 
 total_size = len(combined_dataset)
 val_size = 500

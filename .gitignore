@@ -213,5 +213,5 @@ cython_debug/
 *.DS_Store
 
 #Log
-templog/
+tempLog/
 tempModel/
