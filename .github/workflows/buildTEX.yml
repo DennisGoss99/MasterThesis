@@ -4,25 +4,24 @@ on:
   push:
     branches: [ main ]
     # paths:
-      # - 'latex/masterthesis.tex'
+      # - 'latexFiles/masterthesis.tex'
   workflow_dispatch:
 
 jobs:
   build_latex:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: latex
+
+
     steps:
       - name: Check out latest version of main branch
         uses: actions/checkout@v3
 
       - name: Github Action for LaTeX
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: masterthesis.tex
-          working-directory: latex
           glob_root_file: true
+          working_directory: latexFiles
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
