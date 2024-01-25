@@ -3,8 +3,8 @@ name: Build LaTeX document
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'latex/masterthesis.tex'
+    # paths:
+      # - 'latex/masterthesis.tex'
   workflow_dispatch:
 
 jobs:
@@ -21,6 +21,7 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: masterthesis.tex
+          working-directory: latex
           glob_root_file: true
 
       - name: Upload PDF file
