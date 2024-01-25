@@ -21,13 +21,10 @@ jobs:
       - name: Check out latest version of main branch
         uses: actions/checkout@v3
 
-      - name: Change to LaTeX directory
-        run: cd latex
-
       - name: Github Action for LaTeX
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: masterthesis.tex
+          root_file: latex/masterthesis.tex
           glob_root_file: true
 
       - name: Upload PDF file
