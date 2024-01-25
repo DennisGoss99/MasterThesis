@@ -22,8 +22,11 @@ jobs:
           root_file: masterthesis.tex
           working_directory: latex
 
-      - name: Upload PDF file
-        uses: actions/upload-artifact@v3
-        with:
-          name: PDF
-          path: masterthesis.pdf 
+      - name: Commit and Push PDF
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -f latex/masterthesis.pdf
+          git commit -m "Update PDF"
+          git push
+        working-directory: .
