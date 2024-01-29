@@ -16,6 +16,7 @@ from einops.layers.torch import Rearrange
 import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.utils as vutils
+import argparse
 
 torch.manual_seed(1337)
 
@@ -37,6 +38,7 @@ VERSION = "5.0.0.2_bigData"
 
 #----------------------------------------------
 
+@torch.no_grad()
 def create_spiral(n):
     # Initialize a n x n matrix
     matrix = [[0] * n for _ in range(n)]
@@ -66,7 +68,7 @@ def create_spiral(n):
 
 spiral_indices = torch.tensor(create_spiral(IMAGE_SIZE))
 
-
+@torch.no_grad()
 def convertBackToImg(idx):
     positions_in_spiral = torch.argsort(spiral_indices.flatten())
     reconstructed_tensor = torch.zeros((3,IMAGE_SIZE*IMAGE_SIZE), device=device)
@@ -95,8 +97,63 @@ def get_batch(data):
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
+@torch.no_grad()
 def model_saveFile(version):
-    return f"tempModel/model{VERSION}_FloorEP{version}.pth"
+    return f"tempModel/model{VERSION}_EP{version}.pth"
+
+@torch.no_grad()
+def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
+    DataDic = {
+        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor"],
+        "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD"],
+        "CsGoFloor_1080x": ["Data_CSGO_Floor"],
+        "CsGoFloor_512x": ["Data_CSGO_Floor_qHD"],
+        "FreePBR": ["Data_freepbr1k"],
+        "Polyhaven": ["Data_Polyhaven1k"],
+        "Poliigon": ["Data_Poliigon"],
+    }
+
+    # Prüfen, ob der angegebene Datensatzname im Wörterbuch vorhanden ist
+    if dataset_name not in DataDic:
+        raise ValueError(f"Datensatzname '{dataset_name}' nicht im DataDic gefunden.")
+
+    selected_data_paths = [f"{path}\\{folder}" for folder in DataDic[dataset_name]]
+
+    transform = transforms.Compose(
+        [
+            transforms.RandomCrop((size_x, size_y)),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
+            transforms.ToTensor(),
+        ]
+    )
+
+    datasets_list = [datasets.ImageFolder(root=folder_path, transform=transform) for folder_path in selected_data_paths]
+    combined_dataset = torch.utils.data.ConcatDataset(datasets_list * repeatData)
+
+    return combined_dataset
+
+@torch.no_grad()
+def write_parameter(dataset, train_size, valsize, repeatdataset):
+    path = f"tempModel/modelParameter{VERSION}.txt"
+    with open(path, 'w') as file:
+        file.write(f'LEARNING_RATE={LEARNING_RATE}\n')
+        file.write(f'BATCH_SIZE={BATCH_SIZE}\n')
+        file.write(f'IMAGE_SIZE={IMAGE_SIZE}\n')
+        file.write(f'BLOCK_SIZE={BLOCK_SIZE}\n')
+        file.write(f'CHANNELS_IMG={CHANNELS_IMG}\n')
+        file.write(f'N_EMBD={N_EMBD}\n')
+        file.write(f'N_HEAD={N_HEAD}\n')
+        file.write(f'N_LAYER={N_LAYER}\n')
+        file.write(f'DROPOUT={DROPOUT}\n')
+        file.write(f'VERSION={VERSION}\n')
+        file.write(f'----------------\n')
+        file.write(f'device={device}\n')
+        file.write(f'dataset={dataset}\n')
+        file.write(f'train_size={train_size}\n')
+        file.write(f'valsize={valsize}\n')
+        file.write(f'repeatdataset={repeatdataset}\n')
+
 
 @torch.no_grad()
 def validate(model, dataloader):
@@ -115,8 +172,6 @@ def validate(model, dataloader):
 #----------------------------------------------
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print("device: ",device)
-
 
 class Head(nn.Module):
     """ one head of self-attention """
@@ -249,83 +304,87 @@ class ColumnTransformer(nn.Module):
         return logits, loss
 
 
-transform = transforms.Compose(
-    [
-        transforms.RandomCrop(IMAGE_SIZE),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomVerticalFlip(),
-        transforms.ToTensor(),
-    ]
-)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--path', type=str, help='dataset path', required=True)
+    parser.add_argument('-d','--dataset', type=str, help='Select between: \"AllData_1080x\", \"AllData_512x\", \"CsGoFloor_1080x\", \"CsGoFloor_512x\", \"FreePBR\", \"Polyhaven\", \"Poliigon\"', required=True)
+    parser.add_argument('-v', '--valsize', type=int, help='size of the validation dataset [default 500]', required=False , default=500)
+    parser.add_argument('-i', '--iter', type=int, help='number of iterations [default 1]', required=False , default=1)
+    parser.add_argument('-r', '--repeatdataset', type=int, help='repeat dataset [default 1]', required=False , default=1)
 
-combined_dataset_Nr = 2
-
-combined_dataset = torch.utils.data.ConcatDataset([datasets.ImageFolder(root="/scratch/usr/nwmdgthk/allData/Data/Data_CSGO_Floor", transform=transform) for _ in range(combined_dataset_Nr)])
-
-total_size = len(combined_dataset)
-val_size = 500
-train_size = total_size - val_size  # Calculate training size
-
-train_data, val_data = random_split(combined_dataset, [train_size, val_size])
-
-
-print(f'train_data: {len(train_data)}, val_data: {len(val_data)}')
-
-train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
-val_loader = DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=True)
-
-print(f'BLOCK_SIZE: {BLOCK_SIZE}, BATCH_SIZE: {BATCH_SIZE}, CHANNELS_IMG: {CHANNELS_IMG}, IMAGE_SIZE: {IMAGE_SIZE}, N_EMBD: {N_EMBD}')
-
-
-
-m = ColumnTransformer()
-m = m.to(device)
-
-optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
-
-#print parameterscount
-print(f'Model has {count_parameters(m):,} trainable parameters')
-
-
-iter_i = 3
-eval_i = 100
-eval_img = 100
-
-writer = SummaryWriter(f"tempLog/{VERSION}_Floor/")
-model_path = 'tempModel/'
-if not os.path.exists(model_path):
-    os.makedirs(model_path)
-
-for e in range(0,iter_i):
-    loss_sum = 0.0
-    for idx, (data, _) in enumerate(train_loader):
-
-        dataRaw = data.to(device)
-        x, y = get_batch(dataRaw) # (B,C,H)
+    args = parser.parse_args()
     
-        logits, loss = m(x, y)
+    print("device: ",device)
+    print(f'The path to the dataset is: {args.path}')
+
+    dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, args.repeatdataset)
+
+    total_size = len(dataset)
+    val_size = args.valsize
+    train_size = total_size - val_size  # Calculate training size
+
+    train_data, val_data = random_split(dataset, [train_size, val_size])
+
+
+    print(f'train_data: {len(train_data)}, val_data: {len(val_data)}')
+
+    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=True)
+
+    print(f'BLOCK_SIZE: {BLOCK_SIZE}, BATCH_SIZE: {BATCH_SIZE}, CHANNELS_IMG: {CHANNELS_IMG}, IMAGE_SIZE: {IMAGE_SIZE}, N_EMBD: {N_EMBD}')
+
+    m = ColumnTransformer()
+    m = m.to(device)
+
+    optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
+
+    #print parameterscount
+    print(f'Model has {count_parameters(m):,} trainable parameters')
+
+    iter_i = args.iter
+    eval_i = 100
+    eval_img = 100
+
+    writer = SummaryWriter(f"tempLog/{VERSION}_Floor/")
+
+    model_path = 'tempModel/'
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+
+    write_parameter(args.dataset, train_size, val_size, args.repeatdataset)
+
+    for e in range(0,iter_i):
+        loss_sum = 0.0
+        for idx, (data, _) in enumerate(train_loader):
+
+            dataRaw = data.to(device)
+            x, y = get_batch(dataRaw) # (B,C,H)
         
-        loss_sum += loss.item()
-        optimizer.zero_grad(set_to_none=True)
-        loss.backward()
-        optimizer.step()
-        
+            logits, loss = m(x, y)
+            
+            loss_sum += loss.item()
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            optimizer.step()
+            
 
-        if idx % eval_img == 0 and idx != 0:
-            combined_images = torch.cat([convertBackToImg(y[0]), convertBackToImg(logits[0])], dim=3)
-            image_grid = vutils.make_grid(combined_images)
-            writer.add_image('Generated vs Original', image_grid, e* len(train_loader)// eval_img + idx // eval_img)
+            if idx % eval_img == 0 and idx != 0:
+                combined_images = torch.cat([convertBackToImg(y[0]), convertBackToImg(logits[0])], dim=3)
+                image_grid = vutils.make_grid(combined_images)
+                writer.add_image('Generated vs Original', image_grid, e* len(train_loader)// eval_img + idx // eval_img)
+
+            if(idx % eval_i == 0 and idx != 0):
+                train_loss = loss_sum / eval_i
+                val_loss = 0.0
+                val_loss = validate(m, val_loader)
+                print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}')
+                torch.save(m, model_saveFile(e))
+                loss_sum = 0.0
+
+                writer.add_scalars('Losses', {'Training Loss': train_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
+
+    writer.close()
 
 
-
-        if(idx % eval_i == 0 and idx != 0):
-            train_loss = loss_sum / eval_i
-            val_loss = 0.0
-            val_loss = validate(m, val_loader)
-            print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}')
-            torch.save(m, model_saveFile(e))
-            loss_sum = 0.0
-
-            writer.add_scalars('Losses', {'Training Loss': train_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
-
-writer.close()
+if __name__ == '__main__':
+    main()   
