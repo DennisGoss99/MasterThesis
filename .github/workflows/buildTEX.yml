@@ -3,8 +3,9 @@ name: Build LaTeX document
 on:
   push:
     branches: [ main ]
-    # paths:
-    #   - 'latex/masterthesis.tex'
+    paths:
+      - 'latex/masterthesis.tex'
+      - 'latex/pages/*.tex'
   workflow_dispatch:
 
 jobs:

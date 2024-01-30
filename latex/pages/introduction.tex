@@ -5,24 +5,33 @@ In this thesis we will investigate the use of traditional Transformer model to g
     
 \subsection{Data}
     
-    \subsubsection{Data retrieval}
-        In the internet you can find a lot of textures. But not all of them are suitable for this task. The textures should be seamless, shouldn't contain shadows and should not contain any objects. Textures of Floors are used like carpets, tiles, wood, concret and many more. I used to approches to get the data for this thesis.
-        
-        \begin{itemize}
-            \item Web scraping
-            The textures from the internet are sourced from multiple free texture provider like textures.com, texturehaven.com, ... . Most of the websites have the functionallity to download on texture at the time, so often multiple scripts are used to generate a list of suitable Textures and then to download them. The scripts are develloped with UiPath and Python. 
-            
-            \item Video game textures
-            
-            The second approche is to use textures from video games. The advantage of this approche is that the textures are already seamless and often of high quality and quantity. The disadvantage is that the textures are often very repetitive and. To get the textures a downwards facing recoring of the game is made and then the textures are extracted from the video. The major problem with this approch is that the shadows and all Ui Elements (Hud elemetns) need to be disabled in the game. This is unfortially not always possible.
+\subsubsection{Data Retrieval}
+In the internet, a wide variety of textures can be found, but not all of them are suitable for this task. The textures should be seamless, devoid of shadows, and free from any objects. Textures of floors, such as carpets, tiles, wood, concrete, and more, were utilized. Two approaches were employed to acquire the data for this thesis.
 
-        \end{itemize}
+\begin{itemize}
+    \item Web Data Collection
 
-    \subsubsection{Data cleaning}
-        (remove duplicates, remove non textures, ...)
+    The data for this project was obtained from various online sources. Numerous free texture providers, such as textures.com, texturehaven.com, and others, were utilized for data acquisition. Due to the limitation of downloading one texture at a time from most websites, a series of scripts were developed to compile a list of suitable textures and automate the downloading process. These scripts were created using UiPath and Python.
+    
+    \item Video Game Textures
+    
+    The second approach involved using textures from video games. The advantage of this approach is that these textures are already seamless and often of high quality and quantity. However, a drawback is that these textures can be very repetitive. To obtain these textures, downward-facing recordings of the game were made, and the textures were extracted from the video. The major challenge with this approach is the need to disable shadows and all UI elements (HUD elements) in the game, which is not always possible.
+\end{itemize}
+
+\subsubsection{Data Cleaning}
+
+    To ensure that the data is consistent and free from elements that could corrupt the model, various cleaning steps were applied. For example, all images containing 3D objects were removed, especially those gathered from video games. During the recording of the floor, unwanted debris or pieces of wood were often present, and all extracted frames were manually checked.
+
+    In the case of web-gathered textures, there were different folder structures, and it was necessary to standardize them across all data folders. Additionally, some of them had associated files that were irrelevant for this use case and needed to be discarded.
+
+    All the images were in high-definition (HD) quality, with a height of approximately 1080 pixels.
+
     \subsubsection{Patterns in the data}
         (color, size, ...)
-    \subsubsection{Sync data with gö}
+
+    \subsubsection{Data Synchronization}
+
+    In the thesis, a manually data synchronization rutine is established to maintain data consistency between the supercomputer located in Berlin/Göttingen and the local workstation.
 
 
 \subsection{Training process}
