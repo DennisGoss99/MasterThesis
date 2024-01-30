@@ -3,8 +3,8 @@ name: Build LaTeX document
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'latex/masterthesis.tex'
+    # paths:
+    #   - 'latex/masterthesis.tex'
   workflow_dispatch:
 
 jobs:
@@ -22,11 +22,16 @@ jobs:
           root_file: masterthesis.tex
           working_directory: latex
 
+      - name: Move PDF file up one directory
+        run: |
+          mv latex/masterthesis.pdf .
+        working-directory: .
+
       - name: Commit and Push PDF
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -f latex/masterthesis.pdf
+          git add -f masterthesis.pdf
           git commit -m "Update PDF"
           git push
         working-directory: .
