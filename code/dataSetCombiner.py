@@ -24,7 +24,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     if dataset_name not in DataDic:
         raise ValueError(f"Datensatzname '{dataset_name}' nicht im DataDic gefunden.")
 
-    selected_data_paths = [f"{path}\\{folder}" for folder in DataDic[dataset_name]]
+    selected_data_paths = [f"{path}/{folder}" for folder in DataDic[dataset_name]]
 
     transform = transforms.Compose(
         [
@@ -49,12 +49,3 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     combined_dataset = torch.utils.data.ConcatDataset(datasets_list * repeatData)
 
     return combined_dataset
-
-# %%
-
-path = r"C:\Users\Dennis\Desktop\Pro\AITest\imgGen\Data"
-
-dataset = getDataSet(path, "AllData_1080x", 512, 512, True, 1)
-len(dataset)
-
-
