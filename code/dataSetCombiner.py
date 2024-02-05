@@ -12,6 +12,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     DataDic = {
         "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor"],
         "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD"],
+        "Minecraft_1024x": ["Data_Minecraft/1024x1024"],
         "CsGoFloor_1080x": ["Data_CSGO_Floor"],
         "CsGoFloor_512x": ["Data_CSGO_Floor_qHD"],
         "FreePBR": ["Data_freepbr1k"],
