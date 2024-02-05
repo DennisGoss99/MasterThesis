@@ -18,6 +18,15 @@ import torchvision.utils as vutils
 import argparse
 import numpy as np
 
+
+import sys
+module_dir = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
+sys.path.append(module_dir)
+
+from dataSetCombiner import getDataSet
+from modelHelper import count_parameters, parseParameter, model_saveFile, write_parameter
+
+
 torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
@@ -34,7 +43,7 @@ N_HEAD = 6
 N_LAYER = 6
 DROPOUT = 0.2
 
-VERSION = "2.1.7.0_bigData"
+VERSION = "2.1.7.1_bigData"
 
 #----------------------------------------------
 
@@ -49,80 +58,6 @@ def get_batch(data):
     x = rearrange(x, 'c h b -> b h c')
     y = rearrange(y, 'c h b -> b h c')
     return x, y
-
-@torch.no_grad()
-def count_parameters(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-@torch.no_grad()
-def model_saveFile(version, train='pretrain'):
-    return f"tempModel/model{train}{VERSION}_FloorEP{version}.pth"
-
-@torch.no_grad()
-def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=1):
-
-    equalizingPercentage = 0.10
-
-    DataDic = {
-        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor"],
-        "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD"],
-        "CsGoFloor_1080x": ["Data_CSGO_Floor"],
-        "CsGoFloor_512x": ["Data_CSGO_Floor_qHD"],
-        "FreePBR": ["Data_freepbr1k"],
-        "Polyhaven": ["Data_Polyhaven1k"],
-        "Poliigon": ["Data_Poliigon"],
-    }
-
-    # Prüfen, ob der angegebene Datensatzname im Wörterbuch vorhanden ist
-    if dataset_name not in DataDic:
-        raise ValueError(f"Datensatzname '{dataset_name}' nicht im DataDic gefunden.")
-
-    selected_data_paths = [f"{path}/{folder}" for folder in DataDic[dataset_name]]
-
-    transform = transforms.Compose(
-        [
-            transforms.RandomCrop((size_x, size_y)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip(),
-            transforms.ToTensor(),
-        ]
-    )
-
-    datasets_list = []
-
-    for folder_path in selected_data_paths: 
-        dataset = datasets.ImageFolder(root=folder_path, transform=transform)
-        if equalize and ("Data_CSGO_Floor" in folder_path or "Data_CSGO_Floor_qHD" in folder_path):
-            subset_size = int(len(dataset) * equalizingPercentage)
-            indices = np.random.choice(range(len(dataset)), subset_size, replace=False)
-            dataset = Subset(dataset, indices)
-
-        datasets_list.append(dataset)
-
-    combined_dataset = torch.utils.data.ConcatDataset(datasets_list * repeatData)
-
-    return combined_dataset
-
-@torch.no_grad()
-def write_parameter(dataset, train_size, valsize, repeatdataset):
-    path = f"tempModel/modelParameter{VERSION}.txt"
-    with open(path, 'w') as file:
-        file.write(f'LEARNING_RATE={LEARNING_RATE}\n')
-        file.write(f'BATCH_SIZE={BATCH_SIZE}\n')
-        file.write(f'IMAGE_SIZE={IMAGE_SIZE}\n')
-        file.write(f'BLOCK_SIZE={BLOCK_SIZE}\n')
-        file.write(f'CHANNELS_IMG={CHANNELS_IMG}\n')
-        file.write(f'N_EMBD={N_EMBD}\n')
-        file.write(f'N_HEAD={N_HEAD}\n')
-        file.write(f'N_LAYER={N_LAYER}\n')
-        file.write(f'DROPOUT={DROPOUT}\n')
-        file.write(f'VERSION={VERSION}\n')
-        file.write(f'----------------\n')
-        file.write(f'device={device}\n')
-        file.write(f'dataset={dataset}\n')
-        file.write(f'train_size={train_size}\n')
-        file.write(f'valsize={valsize}\n')
-        file.write(f'repeatdataset={repeatdataset}\n')
 
 @torch.no_grad()
 def validate(model, dataloader):
@@ -276,15 +211,7 @@ class ColumnTransformer(nn.Module):
 
 def main():
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--path', type=str, help='dataset path', required=True)
-    parser.add_argument('-d','--dataset', type=str, help='Select between: \"AllData_1080x\", \"AllData_512x\", \"CsGoFloor_1080x\", \"CsGoFloor_512x\", \"FreePBR\", \"Polyhaven\", \"Poliigon\"', required=True)
-    parser.add_argument('-v', '--valsize', type=int, help='size of the validation dataset [default 500]', required=False , default=500)
-    parser.add_argument('-i', '--iter', type=int, help='number of iterations [default 1]', required=False , default=1)
-    parser.add_argument('-r', '--repeatdataset', type=int, help='repeat dataset [default 1]', required=False , default=1)
-    parser.add_argument('-e', '--equalize', action='store_true', help='equalize Dataset [default: False]')
-
-    args = parser.parse_args()
+    args = parseParameter()
 
     print("device: ",device)
     print(f'The path to the dataset is: {args.path}')
@@ -315,8 +242,8 @@ def main():
 
 
     iter_i = args.iter
-    eval_i = 1000
-    eval_img = 1000
+    eval_i = 10
+    eval_img = 10
 
     writer = SummaryWriter(f"tempLog/{VERSION}_Floor/pretrain/")
 
@@ -324,7 +251,24 @@ def main():
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
-    write_parameter(args.dataset, train_size, val_size, args.repeatdataset)
+    write_parameter(
+        device=device, 
+        dataset=args.dataset,
+        train_size=train_size,
+        valsize=val_size,
+        repeatdataset=args.repeatdataset,
+        learning_rate=LEARNING_RATE,
+        batch_size=BATCH_SIZE,
+        image_size=IMAGE_SIZE,
+        block_size=BLOCK_SIZE,
+        channels_img=CHANNELS_IMG,
+        n_embd=N_EMBD,
+        n_head=N_HEAD,
+        n_layer=N_LAYER,
+        dropout=DROPOUT,
+        version=VERSION
+    )
+
 
     for e in range(0,iter_i):
         loss_sum = 0.0
@@ -352,7 +296,7 @@ def main():
                 val_loss = 0.0
                 val_loss = validate(m, val_loader)
                 print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}')
-                torch.save(m, model_saveFile(e))
+                torch.save(m, model_saveFile(VERSION, e))
                 loss_sum = 0.0
 
                 writer.add_scalars('Losses', {'Training Loss': train_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
