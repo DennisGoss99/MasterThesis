@@ -6,17 +6,17 @@ import torch.optim as optim
 import torchvision
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Subset, ConcatDataset, random_split
 from torch.nn import functional as F
 from tqdm import tqdm
 import os
-from torch.utils.data import ConcatDataset
 from einops import rearrange, repeat
 from einops.layers.torch import Rearrange
 import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.utils as vutils
 import argparse
+import numpy as np
 
 torch.manual_seed(1337)
 
@@ -102,7 +102,10 @@ def model_saveFile(version):
     return f"tempModel/model{VERSION}_EP{version}.pth"
 
 @torch.no_grad()
-def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
+def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=1):
+
+    equalizingPercentage = 0.10
+
     DataDic = {
         "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor"],
         "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD"],
@@ -128,7 +131,17 @@ def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
         ]
     )
 
-    datasets_list = [datasets.ImageFolder(root=folder_path, transform=transform) for folder_path in selected_data_paths]
+    datasets_list = []
+
+    for folder_path in selected_data_paths: 
+        dataset = datasets.ImageFolder(root=folder_path, transform=transform)
+        if equalize and ("Data_CSGO_Floor" in folder_path or "Data_CSGO_Floor_qHD" in folder_path):
+            subset_size = int(len(dataset) * equalizingPercentage)
+            indices = np.random.choice(range(len(dataset)), subset_size, replace=False)
+            dataset = Subset(dataset, indices)
+
+        datasets_list.append(dataset)
+
     combined_dataset = torch.utils.data.ConcatDataset(datasets_list * repeatData)
 
     return combined_dataset
@@ -303,7 +316,7 @@ class ColumnTransformer(nn.Module):
             
         return logits, loss
 
-
+equalize
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--path', type=str, help='dataset path', required=True)
@@ -311,13 +324,14 @@ def main():
     parser.add_argument('-v', '--valsize', type=int, help='size of the validation dataset [default 500]', required=False , default=500)
     parser.add_argument('-i', '--iter', type=int, help='number of iterations [default 1]', required=False , default=1)
     parser.add_argument('-r', '--repeatdataset', type=int, help='repeat dataset [default 1]', required=False , default=1)
+    parser.add_argument('-e', '--equalize', action='store_true', help='equalize Dataset [default: False]')
 
     args = parser.parse_args()
     
     print("device: ",device)
     print(f'The path to the dataset is: {args.path}')
 
-    dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, args.repeatdataset)
+    dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, args.equalize, args.repeatdataset)
 
     total_size = len(dataset)
     val_size = args.valsize
