@@ -131,6 +131,7 @@ def validate(model, dataloader):
     for idx, (data, _) in enumerate(dataloader):
         dataRaw = data.squeeze(0).to(device)
         x, y = get_batch(dataRaw)
+        y = y[:,:BLOCK_SIZE,:]
         
         _, loss = model(x, y)
 
@@ -349,7 +350,7 @@ def main():
             if(idx % eval_i == 0 and idx != 0):
                 train_loss = loss_sum / eval_i
                 val_loss = 0.0
-                # val_loss = validate(m, val_loader)
+                val_loss = validate(m, val_loader)
                 print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}')
                 torch.save(m, model_saveFile(e))
                 loss_sum = 0.0
