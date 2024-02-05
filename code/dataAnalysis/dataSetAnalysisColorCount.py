@@ -21,6 +21,10 @@ datasetStrings = ["FreePBR", "Polyhaven", "Poliigon", "Minecraft_1024x", "CsGoFl
 
 path = "/scratch/usr/nwmdgthk/allData/Data"
 
+output_dir = "code/dataAnalysis/output"
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)  # Erstellt das Verzeichnis und alle erforderlichen übergeordneten Verzeichnisse
+
 for datasetString in datasetStrings:
 
     dataset = getDataSet(path, datasetString, 1024, 1024, True, 1)
@@ -49,5 +53,5 @@ for datasetString in datasetStrings:
     df_colors = pd.DataFrame(list(color_counts.items()), columns=['Farbe', 'Anzahl'])
     df_colors_sorted = df_colors.sort_values(by='Farbe').reset_index(drop=True)
 
-    csv_file_path = f"output/dataSetAnalysis-{datasetString}.csv"
+    csv_file_path = f"{output_dir}/dataSetAnalysis-{datasetString}.csv"
     df_colors_sorted.to_csv(csv_file_path, index=False)
