@@ -77,7 +77,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     if dataset_name not in DataDic:
         raise ValueError(f"Datensatzname '{dataset_name}' nicht im DataDic gefunden.")
 
-    selected_data_paths = [f"{path}\\{folder}" for folder in DataDic[dataset_name]]
+    selected_data_paths = [f"{path}/{folder}" for folder in DataDic[dataset_name]]
 
     transform = transforms.Compose(
         [
