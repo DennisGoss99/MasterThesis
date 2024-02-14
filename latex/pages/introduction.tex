@@ -1,12 +1,14 @@
 
-In this thesis we will investigate the use of traditional Transformer model to generate texture asset to use as floor texture in e.g in video games. Transformers are usally used to ... . But in this thesis the focus is to use them to generate the next Pixel in a texture. Multiple different dataset of textures will be used from the internet to train the model. The final develloped models will be trained on a GPU cluster in göthingen. The models will be evaluated on a set of metrics and the results will be compared to other models.
+In this thesis, we will investigate the use of a traditional Transformer model to generate texture assets to use as floor texture in e.g. in video games. Transformers are usually used to ... . But in this thesis, the focus is to use them to generate the next Pixel in a texture. Multiple different datasets of textures will be used from the internet to train the model. The final developed models will be trained on a GPU cluster in Berlin. The models will be evaluated on a set of metrics and the results will be compared to other models.
 
 \subsection{Related work}
     
 \subsection{Data}
     
+
+
 \subsubsection{Data Retrieval}
-In the internet, a wide variety of textures can be found, but not all of them are suitable for this task. The textures should be seamless, devoid of shadows, and free from any objects. Textures of floors, such as carpets, tiles, wood, concrete, and more, were utilized. Two approaches were employed to acquire the data for this thesis.
+On the internet, a wide variety of textures can be found, but not all of them are suitable for this task. The textures should be seamless, devoid of shadows, and free from any objects. Textures of floors, such as carpets, tiles, wood, concrete, and more, were utilized. Two approaches were employed to acquire the data for this thesis.
 
 \begin{itemize}
     \item Web Data Collection
@@ -22,16 +24,112 @@ In the internet, a wide variety of textures can be found, but not all of them ar
 
     To ensure that the data is consistent and free from elements that could corrupt the model, various cleaning steps were applied. For example, all images containing 3D objects were removed, especially those gathered from video games. During the recording of the floor, unwanted debris or pieces of wood were often present, and all extracted frames were manually checked.
 
-    In the case of web-gathered textures, there were different folder structures, and it was necessary to standardize them across all data folders. Additionally, some of them had associated files that were irrelevant for this use case and needed to be discarded.
+    In the case of web-gathered textures, there were different folder structures, and it was necessary to standardize them across all data folders. Additionally, some of them had associated files that were irrelevant to this use case and needed to be discarded.
 
-    All the images were in high-definition (HD) quality, with a height of approximately 1080 pixels.
+    All the images were in high-definition (HD) quality, with a height of approximately 1024 pixels.
+
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            Dataset & Size & Number of Images \\
+            \hline
+            FreePBR & 452.0 MB & 263 \\
+            Polyhaven & 298.0 MB & 439 \\
+            Poliigon & 70.4 MB & 49 \\
+            Minecraft-Textures &  636.0 MB & 493 \\
+            CsGoFloor-Textures & 18.3 GB & 44540 \\
+            \hline
+            Combined & 20.2 GB & 45784 \\
+            \hline
+        \end{tabular}
+        \caption{Datasets collected for this thesis}
+        \label{tab:datasets}
+    \end{table}
 
     \subsubsection{Patterns in the data}
-        (color, size, ...)
+    
+    To examine whether the dataset encompasses a broad spectrum of colors, multiple plots are created. These plots illustrate the color distribution within the datasets, providing insights into the diversity of colors present. Prior to plotting, a comprehensive pixel count across all images is conducted. For instance, if an image features 10 pixels of the color $(255, 0, 0)$, this count is added to a dictionary. Should the subsequent image in the dataset contain 5 pixels of the same color, these are also incorporated into the dictionary, cumulating a total of 15 for that specific color. This process is repeated for each color encountered, aggregating the counts to yield the overall color frequency within the dataset.
+
+    \begin{lstlisting}[language=Python]
+        color_counts = {} 
+        for i, (data, _) in enumerate(dataset):
+            # data is a tensor of shape (3, height, width) 
+            pixel_rgb_array = (data.view(3, -1).t() * 255).to(torch.int32)
+          
+            for pixel_color in map(tuple, pixel_rgb_array):
+                if color in color_counts:
+                    color_counts[pixel_color] += 1
+                else:
+                    color_counts[pixel_color] = 1
+    \end{lstlisting}
+
+    After analyzing the dataset through this method, visual representations of the color distributions were produced using Python and Matplotlib. These plots provide a three-dimensional view of the RGB color space, where the X, Y, and Z axes correspond to the Red, Green, and Blue color values, respectively, each ranging from 0 to 255. 
+
+    \[
+    \text{size} = \log(\text{count of color}) \times 20
+    \]
+
+    The size of each plotted point is calculated based on the logarithm of the color count, scaled by a factor of 20.
+    
+    
+
+    \begin{figure}[htbp]
+        \centering
+        
+        \begin{subfigure}{.33\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/FreePBR.png}
+          \caption{FreePBR}
+          \label{fig:dataset-FreePBR}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{.33\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Polyhaven.png}
+          \caption{Polyhaven}
+          \label{fig:dataset-Polyhaven}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{.33\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Poliigon.png}
+          \caption{Poliigon}
+          \label{fig:dataset-Poliigon}
+        \end{subfigure}
+        
+        \vspace{1cm} % Vertikaler Abstand zwischen den Reihen
+        
+        \begin{subfigure}{.33\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Minecraft_1024x.png}
+          \caption{Minecraft-Textures}
+          \label{fig:dataset-Minecraft-Textures}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{.33\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/CsGoFloor_1080x.png}
+          \caption{CsGoFloor-Textures}
+          \label{fig:dataset-CsGoFloor-Textures}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{.33\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{../code/dataAnalysis/output/combined.png}
+            \caption{Combined}
+            \label{fig:dataset-Combined}
+        \end{subfigure}%
+        \hfill
+    \end{figure}
+
+    In the figure above, the color distributions of the individual datasets are shown. The first five subfigures represent the color distributions of the individual datasets, while the last subfigure (\ref{fig:dataset-Combined}) shows the combined color distribution of all datasets. The color distributions of the individual datasets are quite similar, except for the Minecraft-Textures dataset, which is way more colorful than the others. The combined figure is a combination of all the individual datasets, and it is evident that the color distribution is quite diverse. This is a positive sign, as it indicates that the dataset is not focused on only a specific color spectrum.
+
 
     \subsubsection{Data Synchronization}
 
-    In the thesis, a manually data synchronization rutine is established to maintain data consistency between the supercomputer located in Berlin/Göttingen and the local workstation.
+        In the thesis, a manually data synchronization rutine is established to maintain data consistency between the supercomputer located in Berlin/Göttingen and the local workstation.
 
 
 \subsection{Training process}

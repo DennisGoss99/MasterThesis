@@ -161,6 +161,7 @@ cython_debug/
 
 # Latex: 
 
+*.aux
 *.acn
 *.acr
 *.alg
@@ -211,6 +212,10 @@ cython_debug/
 
 #Mac
 *.DS_Store
+
+#vscode
+
+.vscode/
 
 #Log
 tempLog/

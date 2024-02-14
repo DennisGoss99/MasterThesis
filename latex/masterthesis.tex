@@ -30,6 +30,8 @@ footskip=1cm,headheight=14.599pt]{geometry}
  %Tabellen über mehrere Seiten)
 \usepackage{multirow} % Für das Verbinden von Zeilen innerhalb einer Tabelle mit
 
+\usepackage{subcaption} % Für das Erstellen von Unterabbildungen
+
 % (Zusatz-)Pakete für Formeln
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -52,6 +54,37 @@ footskip=1cm,headheight=14.599pt]{geometry}
 \usepackage[colorlinks,pdfpagelabels,pdfstartview=FitH,
 bookmarksopen=true,bookmarksnumbered=true,linkcolor=black,
 plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkungen
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.5,0} % Slightly darker green for comments
+\definecolor{codegray}{rgb}{0.4,0.4,0.4} % Darker gray for line numbers
+\definecolor{codepurple}{rgb}{0.5,0,0.5} % A more subdued purple for strings
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98} % A lighter background for better contrast
+
+\lstdefinestyle{codeStyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=codeStyle}
+
+\setlength{\parindent}{0pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% DOKUMENT                                %%
