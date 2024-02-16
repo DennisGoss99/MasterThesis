@@ -17,6 +17,7 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision.utils as vutils
 import argparse
 import numpy as np
+import time
 
 
 import sys
@@ -24,7 +25,7 @@ module_dir = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__fil
 sys.path.append(module_dir)
 
 from dataSetCombiner import getDataSet
-from modelHelper import count_parameters, parseParameter, model_saveFile, write_parameter
+from modelHelper import count_parameters, parseParameter, model_saveFile, logger_write_parameter, setup_logger
 
 
 torch.manual_seed(1337)
@@ -213,8 +214,12 @@ def main():
 
     args = parseParameter()
 
-    print("device: ",device)
-    print(f'The path to the dataset is: {args.path}')
+    outputdir = args.out
+
+    if not os.path.exists(outputdir +'/tempModel/'):
+        os.makedirs(outputdir + '/tempModel/')
+
+    logger = setup_logger(outputdir, VERSION)
 
     dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, args.equalize, args.repeatdataset)
 
@@ -224,34 +229,22 @@ def main():
 
     train_data, val_data = random_split(dataset, [train_size, val_size])
 
-
-    print(f'train_data: {len(train_data)}, val_data: {len(val_data)}')
-
     train_loader = DataLoader(train_data, batch_size=1, shuffle=True)
     val_loader = DataLoader(val_data, batch_size=1, shuffle=True)
-
-    print(f'BLOCK_SIZE: {BLOCK_SIZE}, BATCH_SIZE: {BATCH_SIZE}, CHANNELS_IMG: {CHANNELS_IMG}, IMAGE_SIZE: {IMAGE_SIZE}, N_EMBD: {N_EMBD}')
 
     m = ColumnTransformer()
     m = m.to(device)
 
     optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
 
-    #print parameterscount
-    print(f'Model has {count_parameters(m):,} trainable parameters')
-
-
     iter_i = args.iter
-    eval_i = 10
-    eval_img = 10
+    eval_i = 1000
+    eval_img = 1000
 
-    writer = SummaryWriter(f"tempLog/{VERSION}_Floor/pretrain/")
+    writer = SummaryWriter(f"{outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
 
-    model_path = 'tempModel/'
-    if not os.path.exists(model_path):
-        os.makedirs(model_path)
-
-    write_parameter(
+    logger_write_parameter(
+        logger=logger,
         device=device, 
         dataset=args.dataset,
         train_size=train_size,
@@ -267,9 +260,11 @@ def main():
         n_head=N_HEAD,
         n_layer=N_LAYER,
         dropout=DROPOUT,
-        version=VERSION
+        version=VERSION,
+        model_parameter=count_parameters(m)
     )
 
+    start_time = time.time()
 
     for e in range(0,iter_i):
         loss_sum = 0.0
@@ -296,16 +291,21 @@ def main():
                 train_loss = loss_sum / eval_i
                 val_loss = 0.0
                 val_loss = validate(m, val_loader)
-                print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}')
+                logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
                 torch.save(m, model_saveFile(VERSION, e))
                 loss_sum = 0.0
 
                 writer.add_scalars('Losses', {'Training Loss': train_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
     writer.close()
 
+    logger.info('---end---')
+
+    for handler in logger.handlers[:]:
+        handler.close()
+        logger.removeHandler(handler)
+
 if __name__ == '__main__':
     try:
         main()   
-        print('---end---')
     except Exception as e:
         print(f"An error occurred: {e}")

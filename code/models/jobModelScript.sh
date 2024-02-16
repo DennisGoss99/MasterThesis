@@ -8,5 +8,5 @@
 
 source /home/nwmdgthk/pro/MasterThesis/venv/bin/activate
 
-srun python spiralModel/spiralModelv5.0.0.1.py --path "/scratch/usr/nwmdgthk/allData/Data" -d "AllData_1080x" -e -i 3
+srun python spiralModel/spiralModelv5.0.0.1.py --path "/scratch/usr/nwmdgthk/allData/Data" -d "AllData_1080x" -e -r 20 -i 5 -o "spiralModel"
 
