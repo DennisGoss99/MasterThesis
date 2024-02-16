@@ -22,7 +22,7 @@ def parseParameter():
     return args
 
 @torch.no_grad()
-def write_parameter(device, dataset, train_size, valsize, repeatdataset, learning_rate, batch_size, image_size, block_size, channels_img, n_embd, n_head, n_layer, dropout, version):
+def write_parameter(device, dataset, train_size, valsize, repeatdataset, equalize, learning_rate, batch_size, image_size, block_size, channels_img, n_embd, n_head, n_layer, dropout, version):
     path = f"tempModel/modelParameter{version}.txt"
     with open(path, 'w') as file:
         file.write(f'LEARNING_RATE={learning_rate}\n')
@@ -41,3 +41,4 @@ def write_parameter(device, dataset, train_size, valsize, repeatdataset, learnin
         file.write(f'train_size={train_size}\n')
         file.write(f'valsize={valsize}\n')
         file.write(f'repeatdataset={repeatdataset}\n')
+        file.write(f'equalize={equalize}\n')

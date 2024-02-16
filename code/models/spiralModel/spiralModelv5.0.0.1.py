@@ -42,7 +42,7 @@ N_HEAD = 6
 N_LAYER = 6
 DROPOUT = 0.2
 
-VERSION = "5.0.0.3_bigData"
+VERSION = "5.0.0.4_AllData"
 
 #----------------------------------------------
 
@@ -269,6 +269,7 @@ def main():
         train_size=train_size,
         valsize=val_size,
         repeatdataset=args.repeatdataset,
+        equalize=args.equalize,
         learning_rate=LEARNING_RATE,
         batch_size=BATCH_SIZE,
         image_size=IMAGE_SIZE,
@@ -315,4 +316,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()   
+    try:
+        main()
+        print('---end---')  
+    except Exception as e:
+        print(f"An error occurred: {e}")
