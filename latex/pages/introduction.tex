@@ -5,6 +5,7 @@ In this thesis, we will investigate the use of a traditional Transformer model t
     
 \subsection{Data}
     
+This section describes the methods used for gathering, cleaning, and analyzing data in a research thesis on textures. Essential for training a machine learning model, the data is carefully collected from various sources, cleaned to maintain uniformity, and examined for patterns, with a focus on color distribution.
 
 
 \subsubsection{Data Retrieval}
@@ -52,18 +53,18 @@ On the internet, a wide variety of textures can be found, but not all of them ar
     
     To examine whether the dataset encompasses a broad spectrum of colors, multiple plots are created. These plots illustrate the color distribution within the datasets, providing insights into the diversity of colors present. Prior to plotting, a comprehensive pixel count across all images is conducted. For instance, if an image features 10 pixels of the color $(255, 0, 0)$, this count is added to a dictionary. Should the subsequent image in the dataset contain 5 pixels of the same color, these are also incorporated into the dictionary, cumulating a total of 15 for that specific color. This process is repeated for each color encountered, aggregating the counts to yield the overall color frequency within the dataset.
 
-    \begin{lstlisting}[language=Python]
-        color_counts = {} 
-        for i, (data, _) in enumerate(dataset):
-            # data is a tensor of shape (3, height, width) 
-            pixel_rgb_array = (data.view(3, -1).t() * 255).to(torch.int32)
-          
-            for pixel_color in map(tuple, pixel_rgb_array):
-                if color in color_counts:
-                    color_counts[pixel_color] += 1
-                else:
-                    color_counts[pixel_color] = 1
-    \end{lstlisting}
+\begin{lstlisting}[language=Python]
+  color_counts = {} 
+  for i, (data, _) in enumerate(dataset):
+      # data is a tensor of shape (3, height, width) 
+      pixel_rgb_array = (data.view(3, -1).t() * 255).to(torch.int32)
+      
+      for pixel_color in map(tuple, pixel_rgb_array):
+          if color in color_counts:
+              color_counts[pixel_color] += 1
+          else:
+              color_counts[pixel_color] = 1
+\end{lstlisting}
 
     After analyzing the dataset through this method, visual representations of the color distributions were produced using Python and Matplotlib. These plots provide a three-dimensional view of the RGB color space, where the X, Y, and Z axes correspond to the Red, Green, and Blue color values, respectively, each ranging from 0 to 255. 
 
@@ -126,11 +127,9 @@ On the internet, a wide variety of textures can be found, but not all of them ar
 
     In the figure above, the color distributions of the individual datasets are shown. The first five subfigures represent the color distributions of the individual datasets, while the last subfigure (\ref{fig:dataset-Combined}) shows the combined color distribution of all datasets. The color distributions of the individual datasets are quite similar, except for the Minecraft-Textures dataset, which is way more colorful than the others. The combined figure is a combination of all the individual datasets, and it is evident that the color distribution is quite diverse. This is a positive sign, as it indicates that the dataset is not focused on only a specific color spectrum.
 
-
     \subsubsection{Data Synchronization}
 
-        In the thesis, a manually data synchronization rutine is established to maintain data consistency between the supercomputer located in Berlin/Göttingen and the local workstation.
-
+    In the thesis, a manual data synchronization routine is established to maintain data consistency between the supercomputer located in Berlin and the local workstation.
 
 \subsection{Training process}
     (gpu cluster göthingen, my GPU, ...)
