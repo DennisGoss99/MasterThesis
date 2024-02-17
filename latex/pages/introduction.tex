@@ -136,3 +136,11 @@ On the internet, a wide variety of textures can be found, but not all of them ar
 
 \subsection{Models}
     (LLMs, basic idea, roll model, spiral model)
+
+    \subsubsection{Column Image Transformer}
+
+    In the context of this thesis, a model termed the Column Image Transformer (CIT) has been conceptualized and developed. This model embodies an adaptation of the conventional transformer architecture. Distinctively, the CIT model diverges from traditional image processing techniques by segmenting the image into vertical slices or columns of pixels. This segmentation allows for a method where each column is processed on its own, following the "B" batch dimension in the model's structure.
+
+    The model assigns position embeddings to every pixel in a column, indicated by the "H" dimension. This approach enables the model to predict the properties of subsequent pixels within the same column, enhancing the model's ability to reconstruct image content and have a basic understanding of the context. Each pixel includes three values corresponding to the Red, Green, and Blue (RGB) color channels. These channels are processed across the model's layers as the "C" dimension.
+
+    \subsubsection{Spiral Model}
