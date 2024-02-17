@@ -10,7 +10,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     equalizingPercentage = 0.10
 
     DataDic = {
-        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor"],
+        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor", "Data_Portal"],
         "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD"],
         "Minecraft_1024x": ["Data_Minecraft/1024x1024"],
         "CsGoFloor_1080x": ["Data_CSGO_Floor"],
@@ -18,6 +18,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
         "FreePBR": ["Data_freepbr1k"],
         "Polyhaven": ["Data_Polyhaven1k"],
         "Poliigon": ["Data_Poliigon"],
+        "Portal" : ["Data_Portal"],
     }
 
     # Prüfen, ob der angegebene Datensatzname im Wörterbuch vorhanden ist
@@ -39,7 +40,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
 
     for folder_path in selected_data_paths: 
         dataset = datasets.ImageFolder(root=folder_path, transform=transform)
-        if equalize and ("Data_CSGO_Floor" in folder_path or "Data_CSGO_Floor_qHD" in folder_path):
+        if equalize and ("Data_CSGO_Floor" in folder_path or "Data_CSGO_Floor_qHD" in folder_path or "Data_Portal" in folder_path):
             subset_size = int(len(dataset) * equalizingPercentage)
             indices = np.random.choice(range(len(dataset)), subset_size, replace=False)
             dataset = Subset(dataset, indices)
