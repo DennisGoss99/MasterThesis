@@ -8,7 +8,7 @@ def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 def model_saveFile(outputdir, version, epoch, train=''):
-    return f"{outputdir}/tempModel/model{train}{version}_EP{epoch}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pth"
+    return f"{outputdir}/tempModel/model{train}{version}_EP{epoch}-{datetime.datetime.now().strftime('%Y%m%d')}.pth"
 
 def parseParameter():
     parser = argparse.ArgumentParser()

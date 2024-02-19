@@ -232,6 +232,9 @@ def main():
     if not os.path.exists(outputdir +'/tempModel/'):
         os.makedirs(outputdir + '/tempModel/')
 
+    if not os.path.exists(outputdir +'/tempLog/'):
+        os.makedirs(outputdir + '/tempLog/')
+
     logger = setup_logger(outputdir, VERSION)
 
     dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, args.equalize, args.repeatdataset)
@@ -305,8 +308,8 @@ def main():
                 train_loss = loss_sum / eval_i
                 val_loss = 0.0
                 val_loss = validate(m, val_loader)
-                print(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
-                torch.save(m, model_saveFile(VERSION, e))
+                logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
+                torch.save(m, model_saveFile(outputdir, VERSION, e))
                 loss_sum = 0.0
 
                 writer.add_scalars('Losses', {'Training Loss': train_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)

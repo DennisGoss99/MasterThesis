@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=gpu-a100:shared
+#SBATCH --partition=gpu-a100
 #SBATCH --nodes=1
 #SBATCH --output=job_output_%j.txt
 #SBATCH --mail-type=ALL
