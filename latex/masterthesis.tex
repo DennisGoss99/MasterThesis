@@ -1,59 +1,47 @@
 \documentclass[a4paper,12pt,oneside]{article}
 
-%% Verwendete Pakete:
-\usepackage[english]{babel} % für die deutsche Sprache
-\usepackage{caption} % Für schönere Bildunterschriften
-\usepackage[T1]{fontenc} % Schriftkodierung (Für Sonderzeichen u.a.)
-\usepackage[utf8]{inputenc} % Für die direkte Eingabe von Umlauten im Editor u.a.
-\usepackage{fancyhdr} % Für Kopf- und Fußzeilen
-\usepackage{lscape} % Für Querformat
 
-\usepackage{lmodern} % Schriftart "Latin Modern"
-%\usepackage{garamond} % Schriftart "Garamond"
+\usepackage[english]{babel}
+\usepackage{caption}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{lscape}
 
-%Sans Serif-Schriften:
-%\usepackage[scaled]{uarial}
-%\usepackage[scaled]{helvet}
-%%--------------
-\usepackage[normalem]{ulem} % Für das Unterstreichen von Text z.B. mit \uline{}
+\usepackage{lmodern}
+
+\usepackage[normalem]{ulem}
 \usepackage[left=3cm,right=2cm,top=1.5cm,bottom=1cm,
 includeheadfoot,headsep=1cm,
 footskip=1cm,headheight=14.599pt]{geometry}
 
-
+\usepackage[backend=biber, style=apa]{biblatex}
 \usepackage{graphicx} 
 \usepackage{epstopdf}
 
-% Pakete für Tabellen
-\usepackage{tabularx} % Einfache Tabellen
-\usepackage{longtable} % Tabellen als Gleitobjekte (für die Aufteilung bei langen 
- %Tabellen über mehrere Seiten)
-\usepackage{multirow} % Für das Verbinden von Zeilen innerhalb einer Tabelle mit
 
-\usepackage{subcaption} % Für das Erstellen von Unterabbildungen
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
 
-% (Zusatz-)Pakete für Formeln
+\usepackage{subcaption}
+
+
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amsfonts}
 
-\usepackage{setspace} % Paket zum Setzen des Zeilenabstandes
-% INFO: Zeilenabstand setzen:
-%
-% Befehle:
-% - \singlespacing  => 1-zeilig (Standard)
-% - \onehalfspacing => 1,5-zeilig
-% - \doublespacing  => 2-zeilig 
-\onehalfspacing % Zeilenabstand auf 1,5-zeilig setzen
+\usepackage{setspace}
+\onehalfspacing
 
-% Farbboxen (für die Merkkästen in dieser Vorlage):
+
 \usepackage{tcolorbox}
 \tcbset{colback=white,colframe=orange,
         fonttitle=\bfseries}
 
 \usepackage[colorlinks,pdfpagelabels,pdfstartview=FitH,
 bookmarksopen=true,bookmarksnumbered=true,linkcolor=black,
-plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkungen
+plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
 
 
 \usepackage{listings}
@@ -84,15 +72,17 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
 }
 \lstset{style=codeStyle}
 
+\addbibresource{bib/literature.bib}
+
 \setlength{\parindent}{0pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% DOKUMENT                                %%
+%% DOCUMENT                                %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
     \pagenumbering{gobble}
     
-    % Deckblatt
+
     \pagestyle{empty}
     \begin{titlepage}
     \begin{figure}[!ht]
@@ -104,10 +94,10 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
       \Large
       Cologne University of Applied Sciences\\
       Faculty of Computer Science and Engineering Science\\
-      \hrule\par\rule{0pt}{2cm} % Horizontale Trennlinie  mit 2 cm Abtand nach unten erzeugen
+      \hrule\par\rule{0pt}{2cm}
       \LARGE
       \textsc{M A S T E R  T H E S I S}\\
-      \vspace{1cm} % Vertikaler Abstand von 1cm erzeugen
+      \vspace{1cm}
       \huge
       Texture Asset generation through Transformer Models\\
       \vspace{1.5cm}
@@ -120,7 +110,7 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
       \textsc{Dennis Goßler}\\
       11140150\\
       \vspace{1.5cm}
-      \begin{tabular}{ll} % Einfache Tabelle ohne Rahmen, mit 2 Spalten erzeugen
+      \begin{tabular}{ll}
           \textbf{First examiner:} & Prof. Dr. Olaf Mersmann \\
           \textbf{Second examiner:} & Prof. Dr. Boris Naujoks \\
       \end{tabular}
@@ -137,18 +127,18 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
     
     \newpage
     
-    % Inhaltsverzeichnis
+
     \tableofcontents
     
     \newpage
-    \pagestyle{fancy} % Kopf- und Fußzeilen aktivieren (=> Paket "fancyhdr")
+    \pagestyle{fancy}
     
     
-    \addcontentsline{toc}{section}{List of Figures} % Manuellen Eintrag im Inhaltsverzeichnis erzeugen
+    \addcontentsline{toc}{section}{List of Figures}
     \listoffigures
     \newpage
     
-    \addcontentsline{toc}{section}{Tabellenverzeichnis}
+    \addcontentsline{toc}{section}{List of tables}
     \listoftables
     \newpage
     
@@ -167,11 +157,10 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
     \input{pages/conclusion} 
     
     
-    % Anhang
+
     \newpage
-    \setcounter{section}{0} % Nummerierung der Gliederungsebene "section" auf 0 setzen
-    \renewcommand*\thesection{\Alph{section}} % Nummerierungsart für die Gliederungsebene "section" 
-    % auf Großbuchstaben setzen
+    \setcounter{section}{0} 
+    \renewcommand*\thesection{\Alph{section}}
     \section{Appendix}\label{appendix}
     \input{pages/appendix}
     \pagenumbering{roman}
@@ -200,8 +189,10 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref} % Für Verlinkun
     
     
     \newpage
-    % Unbeschriftetes Abschlussblatt (Leere Seite)
+    \printbibliography
+
     \thispagestyle{empty}
-    
+    \newpage
+
 \end{document}
 
