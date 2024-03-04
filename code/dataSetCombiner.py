@@ -10,7 +10,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     equalizingPercentage = 0.10
 
     DataDic = {
-        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor", "Data_Portal", "Data_HalfLife2", "Data_UnityAssets/x1024", "Data_BioShockInf"],
+        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor", "Data_Portal", "Data_HalfLife2", "Data_UnityAssets/x1024", "Data_BioShockInf", "Data_StarWarsJFO", "Data_Dishonored"],
         "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD", "Data_UnityAssets/x512"],
         "Minecraft_1024x": ["Data_Minecraft/1024x1024"],
         "CsGoFloor_1080x": ["Data_CSGO_Floor"],
@@ -23,6 +23,8 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
         "UnityAssets_1024x" : ["Data_UnityAssets/x1024"],
         "UnityAssets_512x" : ["Data_UnityAssets/x512"],
         "BioShockInf" : ["Data_BioShockInf"],
+        "StarWarsJFO" : ["Data_StarWarsJFO"],
+        "Dishonored" : ["Data_Dishonored"],
     }
 
     specific_datasets = [
