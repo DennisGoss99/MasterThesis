@@ -10,7 +10,7 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
     equalizingPercentage = 0.10
 
     DataDic = {
-        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor", "Data_Portal", "Data_HalfLife2", "Data_UnityAssets/x1024", "Data_BioShockInf", "Data_StarWarsJFO", "Data_Dishonored"],
+        "AllData_1080x": ["Data_Polyhaven1k", "Data_Poliigon", "Data_Minecraft/1024x1024", "Data_freepbr1k", "Data_CSGO_Floor", "Data_Portal", "Data_HalfLife2", "Data_UnityAssets/x1024", "Data_BioShockInf", "Data_StarWarsJFO", "Data_Dishonored", "Data_Abzu", "Data_BatmanArkhamKnight", "Data_Borderlands", "Data_Borderlands2", "Data_BrothersATOTS", "Data_Dauntless", "Data_Maneater", "Data_MutantYearZeroRTE", "Data_Relicta", "Data_RemnantFromTheAshes", "Data_RUINER", "Data_TrainSimWorld", "Data_TrainSimWorld2", "Data_Vampyr", "Data_XCOM", "Data_XCOM2"],
         "AllData_512x": ["Data_Minecraft/512x512", "Data_CSGO_Floor_qHD", "Data_UnityAssets/x512"],
         "Minecraft_1024x": ["Data_Minecraft/1024x1024"],
         "CsGoFloor_1080x": ["Data_CSGO_Floor"],
@@ -25,6 +25,22 @@ def getDataSet(path, dataset_name, size_x, size_y, equalize = False, repeatData=
         "BioShockInf" : ["Data_BioShockInf"],
         "StarWarsJFO" : ["Data_StarWarsJFO"],
         "Dishonored" : ["Data_Dishonored"],
+        "Abzu" : ["Data_Abzu"],
+        "BatmanArkhamKnight" : ["Data_BatmanArkhamKnight"],
+        "Borderlands" : ["Data_Borderlands"],
+        "Borderlands2" : ["Data_Borderlands2"],
+        "BrothersATOTS" : ["Data_BrothersATOTS"],
+        "Dauntless" : ["Data_Dauntless"],
+        "Maneater" : ["Data_Maneater"],
+        "MutantYearZeroRTE" : ["Data_MutantYearZeroRTE"],
+        "Relicta" : ["Data_Relicta"],
+        "RemnantFromTheAshes" : ["Data_RemnantFromTheAshes"],
+        "RUINER" : ["Data_RUINER"],
+        "TrainSimWorld" : ["Data_TrainSimWorld"],
+        "TrainSimWorld2" : ["Data_TrainSimWorld2"],
+        "Vampyr" : ["Data_Vampyr"],
+        "XCOM" : ["Data_XCOM"],
+        "XCOM2" : ["Data_XCOM2"]
     }
 
     specific_datasets = [
