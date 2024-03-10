@@ -127,7 +127,7 @@ def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
         'Maneater_x512' : ['Data_Maneater/x512'],
         'Minecraft_x512' : ['Data_Minecraft/x512'],
         'MutantYearZeroRTE_x512'  : ['Data_MutantYearZeroRTE/x512'],
-        'OperatorNdmQG/x512' : ['Data_OperatorNdmQG/x512'],
+        'OperatorNdmQG_x512' : ['Data_OperatorNdmQG/x512'],
         'Phasmophobia_x512' : ['Data_Phasmophobia/x512'],
         'Poliigon_x512' : ['Data_Poliigon/x512'],
         'Polyhaven1k_x512' : ['Data_Polyhaven1k/x512'],
