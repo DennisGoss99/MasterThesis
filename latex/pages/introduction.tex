@@ -52,21 +52,52 @@ On the internet, a wide variety of textures can be found, but not all of them ar
     All the images were in high-definition (HD) quality, with a height of approximately 1024 pixels.
 
 
-    \begin{table}[h]
+    \begin{table}[H]
         \centering
-        \begin{tabular}{|c|c|c|}
-            \hline
-            Dataset & Size & Number of Images \\
-            \hline
-            Free PBR & 452.0 MB & 263 \\
-            Polyhaven & 298.0 MB & 439 \\
-            Poliigon & 70.4 MB & 49 \\
-            Minecraft-Textures &  636.0 MB & 493 \\
-            CsGoFloor-Textures & 18.3 GB & 44540 \\
-            \hline
-            Combined & 20.2 GB & 45784 \\
-            \hline
-        \end{tabular}
+        \begin{adjustbox}{width=0.8\textwidth}
+          \begin{tabular}{|r|c|r|r|}
+              \hline
+              Dataset & Type & Number of Images [size 512x512] & Number of Images [size 1024x1024] \\
+              \hline
+              0 & Game assets & 56 & 14 \\
+              1 & Game assets & 3236 & 809 \\
+              2 & Game assets & 2152 & 539 \\
+              3 & Game assets & 184 & 46 \\
+              4 & Game assets & 1808 & 452 \\
+              5 & Game assets & 100 & 25 \\
+              6 & Game assets & 309 & 71 \\
+              7 & Game assets & 4154 & 809 \\
+              8 & Game assets & 16 & 4 \\
+              9 & Game assets & 1084 & 271 \\
+              10 & Website & 1052 & 263 \\
+              11 & Game assets & 102 & 20 \\
+              12 & Game assets & 1334 & 36 \\
+              13 & Game assets & 409 & 24 \\
+              14 & Game assets & 76 & 19 \\
+              15 & Game assets & 5789 & 628 \\
+              16 & Game assets & 632 & 158 \\
+              17 & Game assets & 1 & --- \\
+              18 & Game assets & 1984 & 491 \\
+              19 & Website & 196 & 49 \\
+              20 & Website & 1756 & 439 \\
+              21 & Game assets & 643 & 110 \\
+              22 & Game assets & 69 & --- \\
+              23 & Game assets & 1656 & 414 \\
+              24 & Game assets & 4188 & 1047 \\
+              25 & Game assets & 24 & 6 \\
+              26 & Game assets & 2980 & 745 \\
+              27 & Game assets & 996 & 14 \\
+              28 & Game assets & 492 & 123 \\
+              29 & Game assets & 2096 & 524 \\
+              30 & Website & 17816 & 4434 \\
+              31 & Game assets & 8 & 2 \\
+              32 & Game assets & 4 & 1 \\
+              33 & Game assets & 52 & 13 \\
+              \hline
+              Combined & & 57454 & 12600 \\
+              \hline
+          \end{tabular}
+        \end{adjustbox}
         \caption{Datasets collected for this thesis}
         \label{tab:datasets}
     \end{table}
@@ -98,56 +129,56 @@ On the internet, a wide variety of textures can be found, but not all of them ar
     
     
 
-    \begin{figure}[h]
-        \centering
+    % \begin{figure}[h]
+    %     \centering
         
-        \begin{subfigure}{.33\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/FreePBR.png}
-          \caption{FreePBR}
-          \label{fig:dataset-FreePBR}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{.33\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Polyhaven.png}
-          \caption{Polyhaven}
-          \label{fig:dataset-Polyhaven}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{.33\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Poliigon.png}
-          \caption{Poliigon}
-          \label{fig:dataset-Poliigon}
-        \end{subfigure}
+    %     \begin{subfigure}{.33\textwidth}
+    %       \centering
+    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/FreePBR.png}
+    %       \caption{FreePBR}
+    %       \label{fig:dataset-FreePBR}
+    %     \end{subfigure}%
+    %     \hfill
+    %     \begin{subfigure}{.33\textwidth}
+    %       \centering
+    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Polyhaven.png}
+    %       \caption{Polyhaven}
+    %       \label{fig:dataset-Polyhaven}
+    %     \end{subfigure}%
+    %     \hfill
+    %     \begin{subfigure}{.33\textwidth}
+    %       \centering
+    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Poliigon.png}
+    %       \caption{Poliigon}
+    %       \label{fig:dataset-Poliigon}
+    %     \end{subfigure}
         
-        \vspace{1cm} % Vertikaler Abstand zwischen den Reihen
+    %     \vspace{1cm} % Vertikaler Abstand zwischen den Reihen
         
-        \begin{subfigure}{.33\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Minecraft_1024x.png}
-          \caption{Minecraft-Textures}
-          \label{fig:dataset-Minecraft-Textures}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{.33\textwidth}
-          \centering
-          \includegraphics[width=\linewidth]{../code/dataAnalysis/output/CsGoFloor_1080x.png}
-          \caption{CsGoFloor-Textures}
-          \label{fig:dataset-CsGoFloor-Textures}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{.33\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{../code/dataAnalysis/output/combined.png}
-            \caption{Combined}
-            \label{fig:dataset-Combined}
-        \end{subfigure}%
-        \hfill
-    \end{figure}
+    %     \begin{subfigure}{.33\textwidth}
+    %       \centering
+    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Minecraft_1024x.png}
+    %       \caption{Minecraft-Textures}
+    %       \label{fig:dataset-Minecraft-Textures}
+    %     \end{subfigure}%
+    %     \hfill
+    %     \begin{subfigure}{.33\textwidth}
+    %       \centering
+    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/CsGoFloor_1080x.png}
+    %       \caption{CsGoFloor-Textures}
+    %       \label{fig:dataset-CsGoFloor-Textures}
+    %     \end{subfigure}%
+    %     \hfill
+    %     \begin{subfigure}{.33\textwidth}
+    %         \centering
+    %         \includegraphics[width=\linewidth]{../code/dataAnalysis/output/combined.png}
+    %         \caption{Combined}
+    %         \label{fig:dataset-Combined}
+    %     \end{subfigure}%
+    %     \hfill
+    % \end{figure}
 
-    In the figure above, the color distributions of the individual datasets are shown. The first five subfigures represent the color distributions of the individual datasets, while the last subfigure (\ref{fig:dataset-Combined}) shows the combined color distribution of all datasets. The color distributions of the individual datasets are quite similar, except for the Minecraft-Textures dataset, which is way more colorful than the others. The combined figure is a combination of all the individual datasets, and it is evident that the color distribution is quite diverse. This is a positive sign, as it indicates that the dataset is not focused on only a specific color spectrum.
+    % In the figure above, the color distributions of the individual datasets are shown. The first five subfigures represent the color distributions of the individual datasets, while the last subfigure (\ref{fig:dataset-Combined}) shows the combined color distribution of all datasets. The color distributions of the individual datasets are quite similar, except for the Minecraft-Textures dataset, which is way more colorful than the others. The combined figure is a combination of all the individual datasets, and it is evident that the color distribution is quite diverse. This is a positive sign, as it indicates that the dataset is not focused on only a specific color spectrum.
 
     \subsubsection{Data Synchronization}
 

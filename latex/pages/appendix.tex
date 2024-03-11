@@ -1,2 +1,69 @@
 
-\subsection{Unterabschnitt von Appendix}\label{subsec_UabsAnhang}
+% syntax: none
+
+\subsection{Dataset Plots in the Lab Color Space}
+
+\begin{figure}[H]
+    \centering
+    \foreach \i in {1,...,35}{
+      \begin{subfigure}[t]{0.146\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/labPlot_\i}
+        
+        \ifnum \i=1
+            \caption{All Data}
+        \else
+            \caption{Data \i}
+        \fi
+
+        \label{lab_fig:sub\i}
+      \end{subfigure}
+      % Use the modulo operation to determine if a line break should be added
+      \pgfmathparse{int(mod(\i,6))}
+      \ifnum\pgfmathresult=0
+          \newline
+      \else
+          \hfill
+      \fi
+    }
+    \begin{subfigure}[t]{0.146\textwidth}
+        \centering
+        % No image to include, so this is left empty
+        \caption*{} % Empty caption
+    \end{subfigure}
+    \caption{Visualization of datasets plotted in the LAB color space}
+    \label{lab_fig:all}
+
+\end{figure}
+
+\subsection{Dataset Plots in the RGB Color Space}
+
+\begin{figure}[H]
+    \centering
+    \foreach \i in {1,...,35}{
+      \begin{subfigure}[t]{0.146\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/rgb/rgbPlot_\i}
+        \ifnum \i=1
+            \caption{All Data}
+        \else
+            \caption{Data \i}
+        \fi
+        \label{rgb_fig:sub\i}
+      \end{subfigure}
+      % Use the modulo operation to determine if a line break should be added
+      \pgfmathparse{int(mod(\i,6))}
+      \ifnum\pgfmathresult=0
+          \newline
+      \else
+          \hfill
+      \fi
+    }
+    \begin{subfigure}[t]{0.146\textwidth}
+        \centering
+        % No image to include, so this is left empty
+        \caption*{} % Empty caption
+    \end{subfigure}
+    \caption{Visualization of datasets plotted in the RGB color space}
+    \label{rgb_fig:all}
+\end{figure}

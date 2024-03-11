@@ -19,7 +19,6 @@ footskip=1cm,headheight=14.599pt]{geometry}
 \usepackage{graphicx} 
 \usepackage{epstopdf}
 
-
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{multirow}
@@ -28,6 +27,7 @@ footskip=1cm,headheight=14.599pt]{geometry}
 
 \usepackage{csquotes}
 
+
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amsfonts}
@@ -35,6 +35,10 @@ footskip=1cm,headheight=14.599pt]{geometry}
 \usepackage{setspace}
 \onehalfspacing
 
+\usepackage{tikz}
+
+\usepackage{adjustbox}
+\usepackage{float}
 
 \usepackage{tcolorbox}
 \tcbset{colback=white,colframe=orange,
@@ -77,6 +81,7 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
 
 \addbibresource{bib/literature.bib}
 
+\renewcommand{\thesubfigure}{\arabic{subfigure}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% DOCUMENT                                %%
@@ -164,17 +169,15 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
     \newpage
     \setcounter{section}{0} 
     \renewcommand*\thesection{\Alph{section}}
+
+    \pagenumbering{roman}
     \section{Appendix}\label{appendix}
     \input{pages/appendix}
-    \pagenumbering{roman}
-        ABCDE
+
+
+
     \newpage
-        ABC
-    \newpage
-        ABC
-    \newpage
-    
-    
+        
     \pagestyle{empty}
     \pagenumbering{gobble}
     \section{Eidesstattliche Erklärung}
