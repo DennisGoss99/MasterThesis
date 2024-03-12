@@ -69,7 +69,6 @@ def process_dataset(datasetName):
 
         data = pd.read_csv(csv_file_path_sorted)
         df = pd.DataFrame(data)
-        df = df.sample(frac=0.01, random_state=1)
 
         # Convert color strings to RGB tuples
         df['RGB'] = df['Color'].apply(lambda x: tuple(map(int, x.strip("()").split(", "))))

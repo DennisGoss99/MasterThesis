@@ -1,7 +1,7 @@
 
 % syntax: none
 
-\subsection{Dataset Plots in the Lab Color Space}
+\subsection{Dataset Plots in the Lab Color Space}\label{sec:app_labPlots}
 
 \begin{figure}[H]
     \centering
@@ -16,7 +16,7 @@
             \caption{Data \i}
         \fi
 
-        \label{lab_fig:sub\i}
+        \label{fig:lab_sub\i}
       \end{subfigure}
       % Use the modulo operation to determine if a line break should be added
       \pgfmathparse{int(mod(\i,6))}
@@ -32,7 +32,7 @@
         \caption*{} % Empty caption
     \end{subfigure}
     \caption{Visualization of datasets plotted in the LAB color space}
-    \label{lab_fig:all}
+    \label{fig:lab_all}
 
 \end{figure}
 
@@ -49,7 +49,7 @@
         \else
             \caption{Data \i}
         \fi
-        \label{rgb_fig:sub\i}
+        \label{fig:rgb_sub\i}
       \end{subfigure}
       % Use the modulo operation to determine if a line break should be added
       \pgfmathparse{int(mod(\i,6))}
@@ -65,5 +65,5 @@
         \caption*{} % Empty caption
     \end{subfigure}
     \caption{Visualization of datasets plotted in the RGB color space}
-    \label{rgb_fig:all}
+    \label{fig:rgb_all}
 \end{figure}

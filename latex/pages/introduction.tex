@@ -27,7 +27,7 @@ To develop and train the models in this thesis, a powerful computing infrastruct
 
 \subsection{Data}
     
-This section describes the methods used for gathering, cleaning, and analyzing data in a research thesis on textures. Essential for training a machine learning model, the data is carefully collected from various sources, cleaned to maintain uniformity, and examined for patterns, with a focus on color distribution.
+This section describes the methods used for gathering, cleaning, and analyzing data for this thesis. Essential for training a machine learning model, the data is carefully collected from various sources, cleaned to maintain uniformity, and examined for patterns, with a focus on color distribution.
 
 
 \subsubsection{Data Retrieval}
@@ -36,69 +36,73 @@ On the internet, a wide variety of textures can be found, but not all of them ar
 \begin{itemize}
     \item Web Data Collection
 
-    The data for this project was obtained from various online sources. Numerous free texture providers, such as textures.com, texturehaven.com, and others, were utilized for data acquisition. Due to the limitation of downloading one texture at a time from most websites, a series of scripts were developed to compile a list of suitable textures and automate the downloading process. These scripts were created using UiPath and Python.
+    Some data for this project was obtained from various online sources. Numerous free texture providers were utilized for data acquisition. Due to the limitation of downloading one texture at a time from most websites, a series of scripts were developed to compile a list of suitable textures and automate the downloading process. These scripts were created using UiPath and Python.
     
     \item Video Game Textures
-    
-    The second approach involved using textures from video games. The advantage of this approach is that these textures are already seamless and often of high quality and quantity. However, a drawback is that these textures can be very repetitive. To obtain these textures, downward-facing recordings of the game were made, and the textures were extracted from the video. The major challenge with this approach is the need to disable shadows and all UI elements (HUD elements) in the game, which is not always possible.
+
+    The second approach involved using textures from video games. The advantage of this approach is that it allows for the acquisition of many textures simultaneously. However, a drawback is that these collections of textures include normal maps, height maps, and many other assets that are not suitable.
+
+
 \end{itemize}
 
 \subsubsection{Data Cleaning}
 
-    To ensure that the data is consistent and free from elements that could corrupt the model, various cleaning steps were applied. For example, all images containing 3D objects were removed, especially those gathered from video games. During the recording of the floor, unwanted debris or pieces of wood were often present, and all extracted frames were manually checked.
+    To ensure that the data is consistent and free from elements that could corrupt the model, various cleaning steps were applied. For example, all images containing 3D objects were removed. To obtain the cleaned textures from the video game sources, a Python script is used to discard images containing certain keywords like `\_no.png', `\_spec.png', and many others. Additionally, an image should contain a keyword like `floor', `wall', `wood', or `stone'. In summary, 129 good keywords and 56 bad keywords were utilized. The major challenge with this approach is that you can't filter with 100\% accuracy, so all the textures are manually checked. In addition, some textures are only usable as overlays for 3D models and aren't supposed to be flat 2D images on their own. So, these are also filtered out. In total, only 20-30\% of textures from a video game are viable for use in this thesis.
 
-    In the case of web-gathered textures, there were different folder structures, and it was necessary to standardize them across all data folders. Additionally, some of them had associated files that were irrelevant to this use case and needed to be discarded.
+    In the case of web-gathered textures, the textures are often in different folder structures, and it was necessary to standardize them across all data folders. Additionally, some of them had associated files that were irrelevant to this use case and needed to be discarded.
 
-    All the images were in high-definition (HD) quality, with a height of approximately 1024 pixels.
-
+    Finally, the images are cropped to 512x512 or 1024x1024 pixels, as these are the sizes used in this thesis. In total, 57454 images of size 512x512 were collected and 12600 being of size 1024x1024 pixels. The sources are summarized in \autoref{tab:datasets}.
 
     \begin{table}[H]
         \centering
         \begin{adjustbox}{width=0.8\textwidth}
           \begin{tabular}{|r|c|r|r|}
               \hline
-              Dataset & Type & Number of Images [size 512x512] & Number of Images [size 1024x1024] \\
+              Source & Type & Number of Images [size 512x512] & Number of Images [size 1024x1024] \\
               \hline
               0 & Game assets & 56 & 14 \\
-              1 & Game assets & 3236 & 809 \\
-              2 & Game assets & 2152 & 539 \\
+              1 & Game assets & 3,236 & 809 \\
+              2 & Game assets & 2,152 & 539 \\
               3 & Game assets & 184 & 46 \\
               4 & Game assets & 1808 & 452 \\
               5 & Game assets & 100 & 25 \\
               6 & Game assets & 309 & 71 \\
               7 & Game assets & 4154 & 809 \\
               8 & Game assets & 16 & 4 \\
-              9 & Game assets & 1084 & 271 \\
-              10 & Website & 1052 & 263 \\
+              9 & Game assets & 1,084 & 271 \\
+              10 & Website & 1,052 & 263 \\
               11 & Game assets & 102 & 20 \\
-              12 & Game assets & 1334 & 36 \\
+              12 & Game assets & 1,334 & 36 \\
               13 & Game assets & 409 & 24 \\
               14 & Game assets & 76 & 19 \\
-              15 & Game assets & 5789 & 628 \\
+              15 & Game assets & 5,789 & 628 \\
               16 & Game assets & 632 & 158 \\
               17 & Game assets & 1 & --- \\
-              18 & Game assets & 1984 & 491 \\
+              18 & Game assets & 1,984 & 491 \\
               19 & Website & 196 & 49 \\
-              20 & Website & 1756 & 439 \\
+              20 & Website & 1,756 & 439 \\
               21 & Game assets & 643 & 110 \\
               22 & Game assets & 69 & --- \\
-              23 & Game assets & 1656 & 414 \\
-              24 & Game assets & 4188 & 1047 \\
+              23 & Game assets & 1,656 & 414 \\
+              24 & Game assets & 4,188 & 1,047 \\
               25 & Game assets & 24 & 6 \\
-              26 & Game assets & 2980 & 745 \\
+              26 & Game assets & 2,980 & 745 \\
               27 & Game assets & 996 & 14 \\
               28 & Game assets & 492 & 123 \\
-              29 & Game assets & 2096 & 524 \\
-              30 & Website & 17816 & 4434 \\
+              29 & Game assets & 2,096 & 524 \\
+              30 & Website & 17,816 & 4,434 \\
               31 & Game assets & 8 & 2 \\
               32 & Game assets & 4 & 1 \\
               33 & Game assets & 52 & 13 \\
               \hline
-              Combined & & 57454 & 12600 \\
+              Total & Game assets & 36,634 & 7,415 \\
+                    & Website & 20,820 & 5,185 \\
+              \hline
+              Total & & 57,454 & 12,600 \\
               \hline
           \end{tabular}
         \end{adjustbox}
-        \caption{Datasets collected for this thesis}
+        \caption{The Dataset collected for this thesis}
         \label{tab:datasets}
     \end{table}
 
@@ -119,66 +123,37 @@ On the internet, a wide variety of textures can be found, but not all of them ar
               color_counts[pixel_color] = 1
 \end{lstlisting}
 
-    After analyzing the dataset through this method, visual representations of the color distributions were produced using Python and Matplotlib. These plots provide a three-dimensional view of the RGB color space, where the X, Y, and Z axes correspond to the Red, Green, and Blue color values, respectively, each ranging from 0 to 255. 
+    After analyzing the dataset through this method, visual representations of the color distributions were produced using Python, Seaborn and Matplotlib. 
+    
+    \subsubsection{Data Lab plots}
+
+    The following plot illustrates the color distributions of the whole dataset in the lab color spectrum.
+
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{../code/dataAnalysis/plots/lab/labPlot_1.png}
+        \caption{Color distribution of the dataset in the LAB color space}
+        \label{fig:example}
+    \end{figure}
+    
+    This visualization primarily consists of a central plot complemented by two histograms on its top and right sides. The central plot is a color map representing the distribution of colors from the original data in the CIELAB (Lab) color space, specifically focusing on the 'a' and 'b' components. The 'a' axis (horizontal) indicates the position between green and red colors, while the 'b' axis (vertical) shows the position between blue and yellow colors.
+
+    The color map itself is constructed by converting Lab color values back into the RGB color space for display. Colors are distributed across this plot based on their 'a' and 'b' values, with the lightness ('L' component of Lab) squeezed into the 2D plane. The areas with no data are shown in white.
+
+    The histograms on the top and right sides of the central plot provide additional context by showing the distribution of 'a' and 'b' values across the dataset. They are weighted by a logarithmic transformation of the count of colors. This logarithmic scaling helps in highlighting patterns in the data without allowing very high or very low counts to dominate the visualization.
+
+    The plot demonstrates that the dataset encompasses a broad array of colors, with a significant quantity of colors spread throughout the entire spectrum. However, the histograms on the sides suggest that the dataset primarily consists of colors in the middle of the spectrum, indicating that it is not overly colorful but leans more toward the white/gray/black spectrum. This could be attributed to the fact that most of the textures are floor textures, which are typically not very colorful. All the various sources are presented as a lab plot in the appendix; see \autoref{sec:app_labPlots}.
+
+    \subsubsection{Data RGB plots}
+
+    The second plots provide a three-dimensional view of the RGB color space, where the X, Y, and Z axes correspond to the Red, Green, and Blue color values, respectively, each ranging from 0 to 255. 
 
     \[
     \text{size} = \log(\text{count of color}) \times 20
     \]
 
-    The size of each plotted point is calculated based on the logarithm of the color count, scaled by a factor of 20.
-    
-    
-
-    % \begin{figure}[h]
-    %     \centering
-        
-    %     \begin{subfigure}{.33\textwidth}
-    %       \centering
-    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/FreePBR.png}
-    %       \caption{FreePBR}
-    %       \label{fig:dataset-FreePBR}
-    %     \end{subfigure}%
-    %     \hfill
-    %     \begin{subfigure}{.33\textwidth}
-    %       \centering
-    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Polyhaven.png}
-    %       \caption{Polyhaven}
-    %       \label{fig:dataset-Polyhaven}
-    %     \end{subfigure}%
-    %     \hfill
-    %     \begin{subfigure}{.33\textwidth}
-    %       \centering
-    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Poliigon.png}
-    %       \caption{Poliigon}
-    %       \label{fig:dataset-Poliigon}
-    %     \end{subfigure}
-        
-    %     \vspace{1cm} % Vertikaler Abstand zwischen den Reihen
-        
-    %     \begin{subfigure}{.33\textwidth}
-    %       \centering
-    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/Minecraft_1024x.png}
-    %       \caption{Minecraft-Textures}
-    %       \label{fig:dataset-Minecraft-Textures}
-    %     \end{subfigure}%
-    %     \hfill
-    %     \begin{subfigure}{.33\textwidth}
-    %       \centering
-    %       \includegraphics[width=\linewidth]{../code/dataAnalysis/output/CsGoFloor_1080x.png}
-    %       \caption{CsGoFloor-Textures}
-    %       \label{fig:dataset-CsGoFloor-Textures}
-    %     \end{subfigure}%
-    %     \hfill
-    %     \begin{subfigure}{.33\textwidth}
-    %         \centering
-    %         \includegraphics[width=\linewidth]{../code/dataAnalysis/output/combined.png}
-    %         \caption{Combined}
-    %         \label{fig:dataset-Combined}
-    %     \end{subfigure}%
-    %     \hfill
-    % \end{figure}
-
-    % In the figure above, the color distributions of the individual datasets are shown. The first five subfigures represent the color distributions of the individual datasets, while the last subfigure (\ref{fig:dataset-Combined}) shows the combined color distribution of all datasets. The color distributions of the individual datasets are quite similar, except for the Minecraft-Textures dataset, which is way more colorful than the others. The combined figure is a combination of all the individual datasets, and it is evident that the color distribution is quite diverse. This is a positive sign, as it indicates that the dataset is not focused on only a specific color spectrum.
+    The size of each plotted point is determined by the logarithm of the color count, scaled by a factor of 20. See \autoref{fig:rgb_all} for the combined color distribution of all sources. There, it is also clearly visible that most of the sources are not very colorful, leaning more towards the white/gray/black color spectrum.
 
     \subsubsection{Data Synchronization}
 
