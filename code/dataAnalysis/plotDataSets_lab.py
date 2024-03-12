@@ -14,7 +14,7 @@ if os.name == 'posix':
 else:
     path = r"C:\Users\Dennis\Desktop\Pro\MasterThesis\code\dataAnalysis\tempOutput"
 
-output_dir = "plots/lab"
+output_dir = "plots/lab_nolog"
 plot_lim = 128      
 
 def plot_ab(df, name, bins=65, ax_main=None):
@@ -48,8 +48,8 @@ def plot_ab(df, name, bins=65, ax_main=None):
     ax_histx = divider.append_axes("top", 0.8, pad=0.0, sharex=ax_main)  # Set pad to 0
     ax_histy = divider.append_axes("right", 0.8, pad=0.0, sharey=ax_main)  # Set pad to 0
 
-    ax_histx.hist(df['a'], bins=300, orientation='vertical', color='black', linewidth=0.1, weights=df['LogCount'])
-    ax_histy.hist(df['b'], bins=300, orientation='horizontal', color='black', linewidth=0.1, weights=df['LogCount'])
+    ax_histx.hist(df['a'], bins=300, orientation='vertical', color='black', linewidth=0.1, weights=df['Count'])
+    ax_histy.hist(df['b'], bins=300, orientation='horizontal', color='black', linewidth=0.1, weights=df['Count'])
 
 
     ax_histx.axis('off')
