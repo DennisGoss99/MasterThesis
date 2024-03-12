@@ -29,7 +29,7 @@ def plot_ab(df, name, bins=65, ax_main=None):
     x_centers = (x_edges[1:] + x_edges[:-1]) / 2
     y_centers = (y_edges[1:] + y_edges[:-1]) / 2
     ol = 100 - 80 * counts / counts.max()  # Lightness scaled for "beauty"
-    oa, ob = np.meshgrid(x_centers, y_centers, indexing='ij')  # Adjust meshgrid indexing
+    oa, ob = np.meshgrid(x_centers, y_centers) 
     ol[counts == 0] = 100.0  # Mask areas with zero counts (white)
     oa[counts == 0] = 0.0
     ob[counts == 0] = 0.0
