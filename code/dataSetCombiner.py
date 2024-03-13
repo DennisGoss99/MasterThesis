@@ -2,10 +2,42 @@
 import torch
 from torchvision import datasets, transforms
 import numpy as np
-from torch.utils.data import Subset
+from torch.utils.data import Subset, DataLoader
 
 @torch.no_grad()
-def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
+def getDataSet(path, dataset_name, size_x, size_y, repeatData=1,
+               random_vertical_flip=False, random_horizontal_flip=False,
+               crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
+               jitter_contrast=0, jitter_saturation=0, jitter_hue=0):
+    """
+    Loads and returns a combined dataset from specified image folders with optional transformations.
+
+    This function combines images from multiple directories into a single dataset, with the option to apply
+    various image transformations such as cropping, flipping, grayscaling, and color jitter.
+
+    Parameters:
+    - path (str): Base directory path containing the image folders.
+    - dataset_name (str): Key to select specific dataset directories from the predefined dictionary.
+    - size_x (int): The target width for cropping or resizing the images.
+    - size_y (int): The target height for cropping or resizing the images.
+    - repeatData (int, optional): The number of times to repeat the dataset. Defaults to 1.
+    - enable_grayscale (bool, optional): If True, converts images to grayscale. Defaults to False.
+    - enable_random_vertical_flip (bool, optional): If True, randomly flips images vertically. Defaults to True.
+    - enable_random_horizontal_flip (bool, optional): If True, randomly flips images horizontally. Defaults to False.
+    - crop_type (str, optional): Specifies the type of cropping ('random' or 'center'). Defaults to 'random'.
+    - enable_color_jitter (bool, optional): If True, applies random color jittering to the images. Defaults to False.
+    - jitter_brightness (float, optional): Brightness jittering strength. Ignored if enable_color_jitter is False. Defaults to 0.
+    - jitter_contrast (float, optional): Contrast jittering strength. Ignored if enable_color_jitter is False. Defaults to 0.
+    - jitter_saturation (float, optional): Saturation jittering strength. Ignored if enable_color_jitter is False. Defaults to 0.
+    - jitter_hue (float, optional): Hue jittering strength. Ignored if enable_color_jitter is False. Defaults to 0.
+
+    Returns:
+    - combined_dataset: A torch.utils.data.Dataset instance containing the combined and optionally transformed dataset.
+    
+    Raises:
+    - ValueError: If the specified dataset_name is not found in the predefined dictionary of datasets.
+    """
+
 
     DataDic = {
         "AllData_x1024": [  
@@ -151,14 +183,29 @@ def getDataSet(path, dataset_name, size_x, size_y, repeatData=1):
 
     selected_data_paths = [f"{path}/{folder}" for folder in DataDic[dataset_name]]
 
-    transform = transforms.Compose(
-        [
-            transforms.RandomCrop((size_x, size_y)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip(),
-            transforms.ToTensor(),
-        ]
-    )
+    transform_list = []
+
+    if grayscale:
+        transform_list.append(transforms.Grayscale())
+
+    if crop_type == 'random':
+        transform_list.append(transforms.RandomCrop((size_x, size_y)))
+    elif crop_type == 'center':
+        transform_list.append(transforms.CenterCrop((size_x, size_y)))
+
+    if random_horizontal_flip:
+        transform_list.append(transforms.RandomHorizontalFlip())
+
+    if random_vertical_flip:
+        transform_list.append(transforms.RandomVerticalFlip())
+
+    if color_jitter:
+        transform_list.append(transforms.ColorJitter(brightness=jitter_brightness, contrast=jitter_contrast,
+                                                      saturation=jitter_saturation, hue=jitter_hue))
+
+    transform_list.append(transforms.ToTensor())
+
+    transform = transforms.Compose(transform_list)
 
     datasets_list = []
 
