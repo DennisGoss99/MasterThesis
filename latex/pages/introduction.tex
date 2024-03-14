@@ -127,6 +127,8 @@ On the internet, a wide variety of textures can be found, but not all of them ar
     
     To examine whether the dataset encompasses a broad spectrum of colors, multiple plots are created. These plots illustrate the color distribution within the datasets, providing insights into the diversity of colors present. Prior to plotting, a comprehensive pixel count across all images is conducted. For instance, if an image features 10 pixels of the color $(255, 0, 0)$, this count is added to a dictionary. Should the subsequent image in the dataset contain 5 pixels of the same color, these are also incorporated into the dictionary, cumulating a total of 15 for that specific color. This process is repeated for each color encountered, aggregating the counts to yield the overall color frequency within the dataset.
 
+\begin{figure}[H]
+\centering
 \begin{lstlisting}[language=Python]
   color_counts = {} 
   for i, (data, _) in enumerate(dataset):
@@ -139,6 +141,9 @@ On the internet, a wide variety of textures can be found, but not all of them ar
           else:
               color_counts[pixel_color] = 1
 \end{lstlisting}
+\caption{Python code to count the color frequency in a dataset}
+\label{fig:color_count}
+\end{figure}
 
     After analyzing the dataset through this method, visual representations of the color distributions were produced using Python, Seaborn and Matplotlib. 
     
@@ -176,6 +181,7 @@ On the internet, a wide variety of textures can be found, but not all of them ar
 
     In the thesis, a manual data synchronization routine is established to maintain data consistency between the supercomputer located in Berlin and the local workstation.
 
+\newpage
 \subsection{Models}
     (LLMs, basic idea, roll model, spiral model)
 
@@ -196,6 +202,7 @@ On the internet, a wide variety of textures can be found, but not all of them ar
     The adaptation of self-attention for image prediction involves sequentially processing the image, similar to text in natural language processing. However, instead of words or characters, the sequence consists of pixels. In the Column Image Transformer (CIT) model, the image is divided into columns, and the self-attention mechanism is applied to understand the relationships between pixels within each column. This should enable the model to predict the properties of subsequent pixels in a column by considering the context provided by preceding pixels.
 
     \subsubsection{Spiral Image Transformer}
+    \label{sec:IntroSpiralModel}
 
     The second approach is represented by the Spiral Image Transformer (SIT). Unlike its predecessor, the Column Image Transformer (CIT), the SIT model employs a contextually spiral pattern. This architecture enables the generation of images starting from a central point and expanding outward (see ...). In the SIT model, the batch dimensions correspond to distinct images, whereas the H dimension represents the spiral context. Similar to the CIT model, the C dimension denotes the color channels.
 
