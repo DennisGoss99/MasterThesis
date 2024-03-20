@@ -53,7 +53,7 @@ def get_batch(data):
     # C ,H ,W = data.shape
 
     x = data[:, :BLOCK_SIZE, :BATCH_SIZE]
-    y = data[:, 1:BLOCK_SIZE*2+1, :BATCH_SIZE]
+    y = data[:, 1:BLOCK_SIZE+1, :BATCH_SIZE]
 
     x, y = x.to(device), y.to(device)
     x = rearrange(x, 'c h b -> b h c')

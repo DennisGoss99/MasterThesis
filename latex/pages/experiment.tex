@@ -31,11 +31,45 @@
 
 \subsection{Column Image Transformer}
     
-    The Column Image Transformer is a transformer-based model that processes input data in a columnar format as examined in \autoref{sec:IntroColumnModel}.
+    The Column Image Transformer is a transformer-based model that processes input data in a columnar format as examined in detail see \autoref{sec:IntroColumnModel}.
     
-    \subsubsection{Column}
+    \subsubsection{Get Data as Columns}
+
+    The data is loaded as a DataLoader object, which is then iterated over to obtain the data in (Batch, Color, Height, Width) format. The data is then reshaped into a columnar format, resulting in a tensor of shape (Batch, Height, Color). This reshaping is achieved by indexing the data tensor as follows:
+
+\begin{figure}[H]
+\centering
+\begin{lstlisting}[language=Python]
+
+# data: (Batch, Color, Height, Width)
+def get_batch(data):
+
+    x = data[:, :BLOCK_SIZE, :BATCH_SIZE]
+    y = data[:, 1:BLOCK_SIZE+1, :BATCH_SIZE]
+
+    x = rearrange(x, 'c h b -> b h c')
+    y = rearrange(y, 'c h b -> b h c')
+
+    return x, y
+\end{lstlisting}
+\caption{Python function to convert data into a columnar format}
+\label{fig:get_batch_CIT}
+\end{figure}
+
+    The resulting tensor x is the input to the model, and the tensor y is the target output. The y tensor is shifted by one position to the right so that the model can learn to predict the next column based on the previous columns.
+
+    \subsubsection{Pixel Embedding}
+
+    The input part of the data \(x\) is embedded into a higher-dimensional space using pixel embedding layers. This MLP is a straightforward linear layer that maps the input data to a higher-dimensional space, transitioning from 3 color channels to \(N_{\text{EMBD}}\). This layer consists of a linear transformation followed by a ReLU activation function and is succeeded by a dropout layer.
+
+    Through testing and experimentation, it was discovered that the optimal configuration for the pixel embedding layer involves a specific sequence of dimensionality increases. The most effective pathway identified begins by scaling the dimensionality of the input from the original image channels \(C\) to one-fifth of \(N_{\text{EMBD}}\) (\(\frac{1}{5}N_{\text{EMBD}}\)), then increasing it to one-half of \(N_{\text{EMBD}}\) (\(\frac{1}{2}N_{\text{EMBD}}\)) until reaching \(N_{\text{EMBD}}\). The pixel embedding layer is followed by a dropout layer with a dropout rate of 0.2.
+
+    It is crucial to highlight the importance of excluding a layer normalization (layernorm) layer in the initial few layers of the model. Incorporating layernorm early on results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of Red, Green, and Blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the model's ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
+
+    \subsubsection{Positional Embedding}
 
     \subsubsection{Classification or Regression}
+
     \subsubsection{Discriminator}
 
 \newpage
