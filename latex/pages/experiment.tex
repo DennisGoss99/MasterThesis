@@ -3,10 +3,11 @@
 
     To build the models, a set of Python libraries is utilized, mainly PyTorch, NumPy, TensorBoard, and Einops. PyTorch serves as the core tool for constructing and training the models.
     
-    The models discussed in this thesis are based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script demonstrates a straightforward and accessible GPT implementation. 
+    The transformer models discussed in this thesis are based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script demonstrates a straightforward and accessible GPT implementation. 
     
     \subsubsection{Data Handling}
-    
+    \label{sec:DataHandling}
+
     For data management, a script named dataSetCombiner is developed to load and return a combined dataset from specified image folders with optional transformations. The function combines the 33 different sources from multiple directories into a single dataset, also offering the option to apply various image transformations such as cropping, flipping, gray scaling, and color jitter.
     
     It allows for the selection between 512x512 and 1024x1024 pixel datasets, depending on the use case. Parameters can be adjusted to tailor the dataset to specific needs, such as image size, the particular dataset to load, and the option to include multiple instances of the dataset. Furthermore, it can randomly flip images vertically or horizontally to augment the dataset, thereby preventing overfitting and improving model generalization. It also supports color jittering, allowing for random adjustments in image brightness, contrast, saturation, and hue, which introduces further variability into the dataset when needed. Additionally, an option to convert images to grayscale is available.
@@ -35,7 +36,7 @@
     
     \subsubsection{Get Data as Columns}
 
-    The data is loaded as a DataLoader object, which is then iterated over to obtain the data in (Batch, Color, Height, Width) format. The data is then reshaped into a columnar format, resulting in a tensor of shape (Batch, Height, Color). This reshaping is achieved by indexing the data tensor as follows:
+    The data is loaded as a DataLoader object \autoref{sec:DataHandling}, which is then iterated over to obtain the data in (Batch, Color, Height, Width) format. The data is then reshaped into a columnar format, resulting in a tensor of shape (Batch, Height, Color). This reshaping is achieved by indexing the data tensor as follows:
 
 \begin{figure}[H]
 \centering
@@ -67,6 +68,19 @@ def get_batch(data):
     It is crucial to highlight the importance of excluding a layer normalization (layernorm) layer in the initial few layers of the model. Incorporating layernorm early on results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of Red, Green, and Blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the model's ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
 
     \subsubsection{Positional Embedding}
+
+    The positional embedding layer in this model utilizes a learnable embedding matrix of size BLOCK\_SIZE times \(N_{\text{EMBD}}\) to add positional context to the input data. This layer operates by assigning each position in the sequence a unique embedding vector, thereby mapping the original positions to a high-dimensional space of dimension \(N_{\text{EMBD}}\). The integration of positional embeddings is achieved through direct addition to the output of the pixel embedding.
+
+\begin{align*}
+    \text{pos\_emb} = \texttt{self.position\_embedding\_table}(\text{torch.arange}(\texttt{H}, \text{device}=\texttt{device}))
+\end{align*}
+
+The combined embedding, \texttt{x}, is calculated as:
+\begin{align*}
+    x = TOK_{\text{EMBD}} + POS_{\text{EMBD}}
+\end{align*}
+
+    
 
     \subsubsection{Classification or Regression}
 

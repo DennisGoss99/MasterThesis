@@ -205,6 +205,9 @@ cython_debug/
 *.xdy
 *.xml
 *blx.bib
+*.bbl-SAVE-ERROR
+*.bcf-SAVE-ERROR
+*.synctex(busy)
 
 *.pdf
 
