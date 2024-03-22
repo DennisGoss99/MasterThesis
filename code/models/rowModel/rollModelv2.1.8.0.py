@@ -35,7 +35,7 @@ LEARNING_RATE = 3e-5
 BATCH_SIZE = 128
 
 BLOCK_SIZE = 128
-IMAGE_SIZE = 129 + 12
+IMAGE_SIZE = 129
 
 CHANNELS_IMG = 3
 
@@ -44,7 +44,7 @@ N_HEAD = 6
 N_LAYER = 6
 DROPOUT = 0.2
 
-VERSION = "2.1.8.0_newData"
+VERSION = "2.1.8.0_newData_128"
 
 #----------------------------------------------
 
@@ -221,7 +221,7 @@ def main():
 
     logger = setup_logger(outputdir, VERSION)
 
-    dataset =  getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=args.repeatdataset,
+    dataset =  getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=1,
                random_vertical_flip=False, random_horizontal_flip=False,
                crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
                jitter_contrast=0, jitter_saturation=0, jitter_hue=0)
@@ -245,7 +245,10 @@ def main():
     train_val_indices = np.random.choice(range(total_size), train_val_size, replace=False)
     train_val_data = Subset(train_data, train_val_indices)
 
-    train_loader = DataLoader(train_data, batch_size=1, shuffle=True)
+    repeated_train_dataset_list = [train_data for _ in range(args.repeatdataset)]
+    rep_train_dataset = ConcatDataset(repeated_train_dataset_list)
+
+    train_loader = DataLoader(rep_train_dataset, batch_size=1, shuffle=True)
     train_val_loader = DataLoader(train_val_data, batch_size=1, shuffle=True)
     val_loader = DataLoader(val_data, batch_size=1, shuffle=True)
 
@@ -255,8 +258,8 @@ def main():
     optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
 
     iter_i = args.iter
-    eval_i = 1
-    eval_img = 1
+    eval_i = 1000
+    eval_img = 1000
 
     writer = SummaryWriter(f"{outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
 
