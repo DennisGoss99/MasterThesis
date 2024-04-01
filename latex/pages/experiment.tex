@@ -84,15 +84,19 @@ The combined embedding, \texttt{x}, is calculated as:
 
     \subsubsection{Classification or Regression}
 
-    To see if the method (Classification / Regression) has a big impact to the performance of the model both methods are testet. For comparison grayscale input and outputs are used. This is the case because you dont ran into the problem that the output of the Classification can be a 16,581,375 different results (255*255*255) for the Red, Green and Blue channels that could be the output.
+    To see if the method (Classification / Regression) has a big impact on the performance of the model both methods are tested. For comparison grayscale input and outputs are used. This strategy is particularly advantageous because it minimizes the complexity arising from the vast number of potential output possibilities in classification tasks. With RGB color representation, each pixel can be classified into one of 16,581,375 distinct color combinations (255 possibilities for each of the Red, Green, and Blue channels).
+
+    By utilizing grayscale input and outputs, we simplify the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis compared to the intricate color variations present in RGB images. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
 
 
+
+    
 
     \subsubsection{Discriminator}
+    %TODO: Add more information about the discriminator
+    To get a better result a discriminator can be used to enhance the output of the model. In this case, a discriminator is added after the model prediction.
 
-    To get a better result a discriminator can be used to enhance the output of the model. In this case a discriminator is added after the model prediction.
-
-    For this XX new rows are generated and then the discriminator checks if the generated contened is artifficle or a original image. In a perfect senario the discriminator cant distinglish between the generated contend and the original content and the loss will balance out at 50\%
+    For these XX new rows are generated and then the discriminator checks if the generated content is artifice or an original image. In a perfect scenario the discriminator can't distinguish between the generated content and the original content and the loss will balance out at 50\%
 
 \newpage
 
