@@ -84,7 +84,15 @@ The combined embedding, \texttt{x}, is calculated as:
 
     \subsubsection{Classification or Regression}
 
+    To see if the method (Classification / Regression) has a big impact to the performance of the model both methods are testet. For comparison grayscale input and outputs are used. This is the case because you dont ran into the problem that the output of the Classification can be a 16,581,375 different results (255*255*255) for the Red, Green and Blue channels that could be the output.
+
+
+
     \subsubsection{Discriminator}
+
+    To get a better result a discriminator can be used to enhance the output of the model. In this case a discriminator is added after the model prediction.
+
+    For this XX new rows are generated and then the discriminator checks if the generated contened is artifficle or a original image. In a perfect senario the discriminator cant distinglish between the generated contend and the original content and the loss will balance out at 50\%
 
 \newpage
 
