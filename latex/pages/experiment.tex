@@ -72,7 +72,7 @@ def get_batch(data):
     The positional embedding layer in this model utilizes a learnable embedding matrix of size BLOCK\_SIZE times \(N_{\text{EMBD}}\) to add positional context to the input data. This layer operates by assigning each position in the sequence a unique embedding vector, thereby mapping the original positions to a high-dimensional space of dimension \(N_{\text{EMBD}}\). The integration of positional embeddings is achieved through direct addition to the output of the pixel embedding.
 
 \begin{align*}
-    \text{pos\_emb} = \texttt{self.position\_embedding\_table}(\text{torch.arange}(\texttt{H}, \text{device}=\texttt{device}))
+    \text{pos\_emb} = \texttt{self.position\_embedding\_table}(\text{torch.arange}(\texttt{H}))
 \end{align*}
 
 The combined embedding, \texttt{x}, is calculated as:
