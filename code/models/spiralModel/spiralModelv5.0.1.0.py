@@ -18,6 +18,7 @@ import torchvision.utils as vutils
 import argparse
 import numpy as np
 import time
+import traceback
 
 import sys
 module_dir = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
@@ -80,7 +81,7 @@ def validate(model, dataloader):
     total_loss = 0
     total_samples = 0
     for idx, (data, _) in enumerate(dataloader):
-        dataRaw = data.squeeze(0).to(device)
+        dataRaw = data.to(device)
         x, y = get_batch(dataRaw)
         
         _, loss = model(x, y)
@@ -270,8 +271,8 @@ def main():
     optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
 
     iter_i = args.iter
-    eval_i = 1
-    eval_img = 1
+    eval_i = 2
+    eval_img = 2
 
     writer = SummaryWriter(f"{outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
 
@@ -342,4 +343,4 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print(f"An error occurred: {e}")
+        traceback.print_exc()
