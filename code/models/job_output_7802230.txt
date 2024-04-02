@@ -1,0 +1,28 @@
+LEARNING_RATE=3e-05
+BATCH_SIZE=8
+IMAGE_SIZE=64
+BLOCK_SIZE=4095
+CHANNELS_IMG=3
+N_EMBD=128
+N_HEAD=6
+N_LAYER=6
+DROPOUT=0.2
+MODEL_PARAMETER=1725643
+VERSION=5.0.1.0_newData_128
+----------------
+device=cpu
+dataset=AllData_x512
+train_size=54582
+valsize=2872
+trainvalsize=2729
+repeatdataset=10
+----------------
+An error occurred: not enough values to unpack (expected 4, got 3)
+============ Job Information ===================================================
+Submitted: 2024-04-02T13:03:04
+Started: 2024-04-02T13:03:24
+Ended: 2024-04-02T13:04:09
+Elapsed: 1 min, Limit: 1440 min, Difference: 1439 min
+(HT-)CPUs: 144, Nodes: 1
+Estimated core-h: (standard_in) 2: syntax error
+================================================================================
