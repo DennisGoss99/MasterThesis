@@ -15,10 +15,10 @@ def parseParameter():
     parser.add_argument('-p', '--path', type=str, help='dataset path', required=True)
     parser.add_argument('-o', '--out', type=str, help='output dir path', required=False, default='./')
     parser.add_argument('-d','--dataset', type=str, help='Select between: \"AllData_1080x\", \"AllData_512x\", \"CsGoFloor_1080x\", \"CsGoFloor_512x\", \"FreePBR\", \"Polyhaven\", \"Poliigon\"', required=True)
-    parser.add_argument('-v', '--valsize', type=int, help='size of the validation dataset [default 500]', required=False , default=500)
+    parser.add_argument('-v', '--valsize', type=str, help='size of the validation dataset [default 10%]', required=False , default="10%")
+    parser.add_argument('-tv', '--trainvalsize', type=str, help='size of the train validation dataset [default 10%]', required=False , default="10%")
     parser.add_argument('-i', '--iter', type=int, help='number of iterations [default 1]', required=False , default=1)
     parser.add_argument('-r', '--repeatdataset', type=int, help='repeat dataset [default 1]', required=False , default=1)
-    parser.add_argument('-e', '--equalize', action='store_true', help='equalize Dataset [default: False]')
 
     args = parser.parse_args()
     return args
@@ -26,7 +26,7 @@ def parseParameter():
 
 
 @torch.no_grad()
-def logger_write_parameter(logger, device, dataset, train_size, valsize, repeatdataset, equalize, learning_rate, batch_size, image_size, block_size, channels_img, n_embd, n_head, n_layer, dropout, version, model_parameter):
+def logger_write_parameter(logger, device, dataset, train_size, valsize, trainvalsize, repeatdataset, learning_rate, batch_size, image_size, block_size, channels_img, n_embd, n_head, n_layer, dropout, version, model_parameter):
     logger.info(f'LEARNING_RATE={learning_rate}')
     logger.info(f'BATCH_SIZE={batch_size}')
     logger.info(f'IMAGE_SIZE={image_size}')
@@ -42,9 +42,9 @@ def logger_write_parameter(logger, device, dataset, train_size, valsize, repeatd
     logger.info(f'device={device}')
     logger.info(f'dataset={dataset}')
     logger.info(f'train_size={train_size}')
-    logger.info(f'valsize={valsize}\n')
+    logger.info(f'valsize={valsize}')
+    logger.info(f'trainvalsize={trainvalsize}')
     logger.info(f'repeatdataset={repeatdataset}')
-    logger.info(f'equalize={equalize}')
     logger.info(f'----------------')
 
 

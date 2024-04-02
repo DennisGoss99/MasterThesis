@@ -226,29 +226,29 @@ def main():
                crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
                jitter_contrast=0, jitter_saturation=0, jitter_hue=0)
 
+
     total_size = len(dataset)
-    
+
     if args.valsize.endswith('%'):
         val_size = int(total_size * (int(args.valsize[:-1]) / 100))
     else: 
         val_size = int(args.valsize)
 
-    train_size = total_size - val_size # Calculate training size
+    train_size = total_size - val_size
 
     if args.trainvalsize.endswith('%'):
         train_val_size = int(train_size * (int(args.trainvalsize[:-1]) / 100))
     else: 
         train_val_size = int(args.valsize)
 
+
+    train_size = len(dataset) - val_size  
     train_data, val_data = random_split(dataset, [train_size, val_size])
 
-    train_val_indices = np.random.choice(range(total_size), train_val_size, replace=False)
+    train_val_indices = np.random.choice(len(train_data), train_val_size, replace=False)
     train_val_data = Subset(train_data, train_val_indices)
 
-    repeated_train_dataset_list = [train_data for _ in range(args.repeatdataset)]
-    rep_train_dataset = ConcatDataset(repeated_train_dataset_list)
-
-    train_loader = DataLoader(rep_train_dataset, batch_size=1, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=1, shuffle=True)
     train_val_loader = DataLoader(train_val_data, batch_size=1, shuffle=True)
     val_loader = DataLoader(val_data, batch_size=1, shuffle=True)
 
@@ -292,11 +292,11 @@ def main():
         for idx, (data, _) in enumerate(train_loader):
 
             dataRaw = data.squeeze(0).to(device)
+
             x, y = get_batch(dataRaw) # (B,C,H)
             y = y[:,:BLOCK_SIZE,:]
-        
+
             logits, loss = m(x, y)
-            
             loss_sum += loss.item()
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
@@ -309,16 +309,15 @@ def main():
 
 
             if(idx % eval_i == 0 and idx != 0):
-                print("a")
                 train_loss = loss_sum / eval_i
                 val_loss = 0.0
                 val_loss = validate(m, val_loader)
                 train_val_loss = validate(m, train_val_loader)
-                logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {loss_sum}, Train_val Loss: {train_val_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
+                logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Train_val Loss: {train_val_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
                 torch.save(m, model_saveFile(outputdir, VERSION, e))
                 loss_sum = 0.0
-
                 writer.add_scalars('Losses', {'Training Loss': train_val_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
+    
     writer.close()
 
     logger.info('---end---')

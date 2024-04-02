@@ -8,5 +8,4 @@
 
 source /home/nwmdgthk/pro/MasterThesis/venv/bin/activate
 
-srun python spiralModel/spiralModelv5.0.0.1.py --path "/scratch/usr/nwmdgthk/allData/Data" -d "AllData_1080x" -e -r 20 -i 5 -o "spiralModel"
-
+srun python rowModel/rollModelv2.1.8.0.py --path "/scratch/usr/nwmdgthk/allData/Data" -d "AllData_x512" -r 10 -i 5 -o "train/columnModel" -v "5%" -tv "5%"
