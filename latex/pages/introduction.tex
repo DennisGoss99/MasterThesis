@@ -25,12 +25,12 @@ TransGAN by \autocite{jiang2021transgan} revolutionizes image generation with a 
 
 To develop and train the models in this thesis, a powerful computing infrastructure is necessary to manage the extensive datasets and the substantial computational requirements for model training. Unlike conventional development environments where a standard laptop or desktop may suffice, most of the models in this thesis demand a more capable infrastructure. Therefore, a high-performance computing system situated in Berlin is used for the model training processes. This system contains an array of (NVIDIA Tesla A100 80 GB) GPUs, (INTEL Ice Lake 8360Y) CPUs and a significant quantity of RAM. Such a configuration, especially the substantial GPU memory, enables the training and execution of larger models that would be possible on a home workstation. The development of these models is carried out using Python and PyTorch, with the code being crafted in Visual Studio Code and managed through version control with Git. The model development and initial code testing are done on a local machine, reserving the high-performance system exclusively for the final training phases. This approach diverges from standard practices, where often both development and execution occur on the same development platform. Ensuring the code is free of errors prior to giving the task of training the model to the high-performance computing system is crucial, as discovering bugs in the training process can be exceedingly time-consuming. For instance, to endure a training session that extends for 30 hours, only to realize it terminated prematurely due to script errors.
 
-\subsection{Data}
+\subsection{Strategies in Data Acquisition, Cleaning, and Analytical Insights}
     
 This section describes the methods used for gathering, cleaning, and analyzing data for this thesis. Essential for training a machine learning model, the data is carefully collected from various sources, cleaned to maintain uniformity, and examined for patterns, with a focus on color distribution.
 
 
-\subsubsection{Data Retrieval}
+\subsubsection{Data Acquisition}
 On the internet, a wide variety of textures can be found, but not all of them are suitable for this task. The textures should be seamless, devoid of shadows, and free from any objects. Textures of floors, such as carpets, tiles, wood, concrete, and more, were utilized. Two approaches were employed to acquire the data for this thesis.
 
 \begin{itemize}
@@ -177,13 +177,14 @@ On the internet, a wide variety of textures can be found, but not all of them ar
 
     The size of each plotted point is determined by the logarithm of the color count, scaled by a factor of 20. See \autoref{fig:rgb_all} for the combined color distribution of all sources. There, it is also clearly visible that most of the sources are not very colorful, leaning more towards the white/gray/black color spectrum.
 
-    \subsubsection{Data Synchronization}
+    % \subsubsection{Data Synchronization}
 
-    In the thesis, a manual data synchronization routine is established to maintain data consistency between the supercomputer located in Berlin and the local workstation.
+    % In the thesis, a manual data synchronization routine is established to maintain data consistency between the supercomputer located in Berlin and the local workstation.
 
 \newpage
-\subsection{Models}
-    (LLMs, basic idea, roll model, spiral model)
+\subsection{Image Transformers Models}
+    
+    This chapter explores the standard Large Language Models (LLMs) and their transformative applications, and later delves into the modifications required to process images and generate images. Furthermore, this chapter introduces the Column Image Transformer (CIT) and the Spiral Image Transformer (SIT) models, which are the primary focus of this thesis.
 
     \subsubsection{Large Language Models (LLMs)}
 
