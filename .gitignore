@@ -225,3 +225,5 @@ tempLog/
 tempModel/
 
 tempOutput/
+
+job_output_*.txt

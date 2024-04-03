@@ -271,8 +271,8 @@ def main():
     optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
 
     iter_i = args.iter
-    eval_i = 2
-    eval_img = 2
+    eval_i = 100
+    eval_img = 100
 
     writer = SummaryWriter(f"{outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
 
