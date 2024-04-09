@@ -44,7 +44,7 @@ N_HEAD = 6
 N_LAYER = 6
 DROPOUT = 0.2
 
-VERSION = "2.1.8.0_newData_128"
+VERSION = "2.1.8.0_newData_256"
 
 #----------------------------------------------
 
@@ -255,7 +255,7 @@ def main():
     m = ColumnTransformer()
     m = m.to(device)
 
-    optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
+
 
     iter_i = args.iter
     eval_i = 1000
@@ -314,7 +314,7 @@ def main():
                 val_loss = validate(m, val_loader)
                 train_val_loss = validate(m, train_val_loader)
                 logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Train_val Loss: {train_val_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
-                torch.save(m, model_saveFile(outputdir, VERSION, e))
+                
                 loss_sum = 0.0
                 writer.add_scalars('Losses', {'Training Loss': train_val_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
     

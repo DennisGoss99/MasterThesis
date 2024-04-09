@@ -6,6 +6,10 @@ import torch.optim as optim
 import torchvision
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import torch.multiprocessing as mp
+from torch.utils.data.distributed import DistributedSampler
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.distributed import init_process_group, destroy_process_group
 from torch.utils.data import DataLoader, Subset, ConcatDataset, random_split
 from torch.nn import functional as F
 from tqdm import tqdm
@@ -18,7 +22,6 @@ import torchvision.utils as vutils
 import argparse
 import numpy as np
 import time
-import traceback
 
 import sys
 module_dir = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
@@ -26,69 +29,66 @@ sys.path.append(module_dir)
 
 from dataSetCombiner import getDataSet
 from modelHelper import count_parameters, parseParameter, model_saveFile, logger_write_parameter, setup_logger
-from spiralGetData import create_spiral
+
 
 torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
 
-BATCH_SIZE = 8
+BATCH_SIZE = 64
 
-IMAGE_SIZE = 64
-BLOCK_SIZE = IMAGE_SIZE * IMAGE_SIZE - 1
+BLOCK_SIZE = 256
+IMAGE_SIZE = 256
 
 CHANNELS_IMG = 3
 
-N_EMBD = 128
-N_HEAD = 6
-N_LAYER = 6
+N_EMBD = 512
+N_HEAD = 8
+N_LAYER = 8
 DROPOUT = 0.2
 
-VERSION = "5.0.1.0_newData_128"
+VERSION = "2.1.8.0_newData_256"
 
 #----------------------------------------------
 
-spiral_indices = torch.tensor(create_spiral(IMAGE_SIZE))
-
-@torch.no_grad()
-def convertBackToImg(idx):
-    positions_in_spiral = torch.argsort(spiral_indices.flatten())
-    reconstructed_tensor = torch.zeros((3,IMAGE_SIZE*IMAGE_SIZE), device=device)
-    idx = torch.cat((idx, torch.zeros((1,3), device=device)), dim=0)
-    reconstructed_tensor[:,positions_in_spiral] = rearrange(idx, 'h c -> c h')
-    reconstructed_tensor = reconstructed_tensor.view(3,IMAGE_SIZE, IMAGE_SIZE)
-    return rearrange(reconstructed_tensor, 'c h w -> 1 c h w')
-
 @torch.no_grad()
 def get_batch(data):
-    B, C ,H ,W = data.shape
+    # C ,H ,W = data.shape
 
-    spiral_data = torch.zeros_like(data.view(B, C, -1)).to(device)
-
-    spiral_data[:,:,spiral_indices.flatten()] = data.view(B, C, -1)
-
-    x = spiral_data[:, :, :BLOCK_SIZE]
-    y = spiral_data[:, :, 1:BLOCK_SIZE+1]
+    x = data[:, :BLOCK_SIZE, :BATCH_SIZE]
+    y = data[:, 1:BLOCK_SIZE+1, :BATCH_SIZE]
 
     x, y = x.to(device), y.to(device)
-    x = rearrange(x, 'b c h -> b h c')
-    y = rearrange(y, 'b c h -> b h c')
+    x = rearrange(x, 'c h b -> b h c')
+    y = rearrange(y, 'c h b -> b h c')
     return x, y
-
 
 @torch.no_grad()
 def validate(model, dataloader):
     total_loss = 0
     total_samples = 0
     for idx, (data, _) in enumerate(dataloader):
-        dataRaw = data.to(device)
+        dataRaw = data.squeeze(0).to(device)
         x, y = get_batch(dataRaw)
+        y = y[:,:BLOCK_SIZE,:]
         
         _, loss = model(x, y)
 
         total_loss += loss.item()
         total_samples += 1
     return total_loss / total_samples
+
+def ddp_setup(rank, world_size):
+    """
+    Args:
+        rank: Unique identifier of each process
+        world_size: Total number of processes
+    """
+    os.environ["Master_ADDR"] = "localhost"
+    os.environ["MASTER_PORT"] = "12355"
+    torch.cuda.set_device(rank)
+    init_process_group(backend="nccl", rank=rank, world_size=world_size)
+
 
 #----------------------------------------------
 
@@ -224,123 +224,93 @@ class ColumnTransformer(nn.Module):
             
         return logits, loss
 
-def main():
 
-    args = parseParameter()
-    
-    outputdir = args.out
+class Trainer:
+    def __init__(
+        self,
+        model: torch.nn.Module,
+        train_data: DataLoader,
+        optimizer: torch.optim.Optimizer,
+        gpu_id: int,
+        save_every: int,
+        outputdir: str,
+        logger,
+    ) -> None:
+        self.gpu_id = gpu_id
+        self.model = model.to(gpu_id)
+        self.train_data = train_data
+        self.optimizer = optimizer
+        self.save_every = save_every
+        self.model = DDP(model, device_ids=[gpu_id])
+        self.outputdir = outputdir
+        self.logger = logger
 
-    if not os.path.exists(outputdir +'/tempModel/'):
-        os.makedirs(outputdir + '/tempModel/')
+        if(self.gpu_id == 0):
+            self.writer = SummaryWriter(f"{self.outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
+            self.logger = setup_logger(self.outputdir, VERSION)
 
-    logger = setup_logger(outputdir, VERSION)
+
+    def _run_epoch(self, epoch):
+        b_sz = len(next(iter(self.train_data))[0])
+        print(f"[GPU{self.gpu_id}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
+        self.train_data.sampler.set_epoch(epoch)
+        for source, targets in self.train_data:
+            source = source.to(self.gpu_id)
+            targets = targets.to(self.gpu_id)
+
+
+
+        
+
+    def _save_checkpoint(self, epoch):
+        ckp = self.model.module.state_dict()
+        PATH = model_saveFile(self.outputdir, VERSION, e)
+        torch.save(ckp, PATH)
+        print(f"Epoch {epoch} | Training checkpoint saved at {PATH}")
+
+    def train(self, max_epochs: int):
+        for epoch in range(max_epochs):
+            self._run_epoch(epoch)
+
+        if(self.gpu_id == 0):
+            self.writer.close()
+
+
+
+def main(rank: int, world_size: int, args, save_every: int, total_epochs: int):
+    ddp_setup(rank, world_size)
+
+    model = ColumnTransformer()
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=1,
                random_vertical_flip=False, random_horizontal_flip=False,
                crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
                jitter_contrast=0, jitter_saturation=0, jitter_hue=0)
-
-    total_size = len(dataset)
-
-    if args.valsize.endswith('%'):
-        val_size = int(total_size * (int(args.valsize[:-1]) / 100))
-    else: 
-        val_size = int(args.valsize)
-
-    train_size = total_size - val_size
-
-    if args.trainvalsize.endswith('%'):
-        train_val_size = int(train_size * (int(args.trainvalsize[:-1]) / 100))
-    else: 
-        train_val_size = int(args.valsize)
-
-
-    train_size = len(dataset) - val_size  
-    train_data, val_data = random_split(dataset, [train_size, val_size])
-
-    train_val_indices = np.random.choice(len(train_data), train_val_size, replace=False)
-    train_val_data = Subset(train_data, train_val_indices)
-
-    train_loader = DataLoader(train_data, batch_size=1, shuffle=True)
-    train_val_loader = DataLoader(train_val_data, batch_size=1, shuffle=True)
-    val_loader = DataLoader(val_data, batch_size=1, shuffle=True)
-
-    m = ColumnTransformer()
-    m = m.to(device)
-
-    optimizer = optim.Adam(m.parameters(), lr=LEARNING_RATE)
-
-    iter_i = args.iter
-    eval_i = 1000
-    eval_img = 1000
-
-    writer = SummaryWriter(f"{outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
-
-
-
-    logger_write_parameter(
-        logger=logger,
-        device=device, 
-        dataset=args.dataset,
-        train_size=train_size,
-        valsize=val_size,
-        trainvalsize=train_val_size,
-        repeatdataset=args.repeatdataset,
-        learning_rate=LEARNING_RATE,
+    
+    train_data = DataLoader(
+        dataset,
         batch_size=BATCH_SIZE,
-        image_size=IMAGE_SIZE,
-        block_size=BLOCK_SIZE,
-        channels_img=CHANNELS_IMG,
-        n_embd=N_EMBD,
-        n_head=N_HEAD,
-        n_layer=N_LAYER,
-        dropout=DROPOUT,
-        version=VERSION,
-        model_parameter=count_parameters(m)
+        pin_memory=True,
+        shuffle=False,
+        sampler=DistributedSampler(dataset)
     )
 
-    start_time = time.time()
+    trainer = Trainer(model, train_data, optimizer, rank, save_every)
+    trainer.train(total_epochs)
+    destroy_process_group()
 
-    for e in range(0,iter_i):
-        loss_sum = 0.0
-        for idx, (data, _) in enumerate(train_loader):
-
-            dataRaw = data.to(device)
-            x, y = get_batch(dataRaw) # (B,C,H)
-        
-            logits, loss = m(x, y)
-            
-            loss_sum += loss.item()
-            optimizer.zero_grad(set_to_none=True)
-            loss.backward()
-            optimizer.step()
-            
-
-            if idx % eval_img == 0 and idx != 0:
-                combined_images = torch.cat([convertBackToImg(y[0]), convertBackToImg(logits[0])], dim=3)
-                image_grid = vutils.make_grid(combined_images)
-                writer.add_image('Generated vs Original', image_grid, e* len(train_loader)// eval_img + idx // eval_img)
-
-            if(idx % eval_i == 0 and idx != 0):
-                train_loss = loss_sum / eval_i
-                val_loss = 0.0
-                val_loss = validate(m, val_loader)
-                train_val_loss = validate(m, train_val_loader)
-                logger.debug(f'Epoch {e}, Iteration {idx}: Train Loss: {train_loss}, Train_val Loss: {train_val_loss}, Validation Loss: {val_loss}, {int((time.time() - start_time) // 3600):02d}:{int(((time.time() - start_time) % 3600) // 60):02d}:{int((time.time() - start_time) % 60):02d}')
-                torch.save(m, model_saveFile(outputdir, VERSION, e))
-                loss_sum = 0.0
-                writer.add_scalars('Losses', {'Training Loss': train_val_loss, 'Validation Loss': val_loss}, e * len(train_loader) // eval_i + idx // eval_i)
-    
-    writer.close()
-
-    logger.info('---end---')
-
-    for handler in logger.handlers[:]:
-        handler.close()
-        logger.removeHandler(handler)
 
 if __name__ == '__main__':
     try:
-        main()
+            args = parseParameter()
+            outputdir = args.out
+
+            if not os.path.exists(outputdir +'/tempModel/'):
+                os.makedirs(outputdir + '/tempModel/')
+
+            world_size = torch.cuda.device_count()
+            mp.spawn(main, args=(world_size, args.save_every, args.total_epochs, args.batch_size), nprocs=world_size)
+
     except Exception as e:
-        traceback.print_exc()
+        print(f"An error occurred: {e}")
