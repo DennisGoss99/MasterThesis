@@ -92,15 +92,36 @@ The combined embedding, \texttt{x}, is calculated as:
     By utilizing grayscale input and outputs, we simplify the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis compared to the intricate color variations present in RGB images. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
 
 
-    \subsection{Problems}
+    \subsection{testing the model capabilities}
     (layer norm(sigmoid vs clamp), color shift to gray (illustrations of average color), Text tokens vs imgs tokens)
+
+    Several tests are conducted to evaluate the model's capabilities and performance.
+
+    \subsubsection{Sigmoid Compared to Clamp}
+    \label{sec:sigmoid_vs_clamp}
     
+    Due to discoloration issues in the model output, the performance is evaluated using two different activation functions: sigmoid and linear clamp. Typically, the sigmoid function maps input values to a range between 0 and 1. However, in the context of color values, this compression into the [0, 1] range can prevent achieving true black and white colors, as extremely large or small inputs are needed to reach the extremes of 0 or 1. Initially, the linear clamp function, which restricts input values to a specified range without compression, seemed to better preserve the distinct black and white colors. However, it has several notable disadvantages, such as ...(please fill in the biggest problem with backpropagation).
+    
+    %TODO: Add more information about the Problem with the clamp function
+
+    In discussions about this problem, it was suggested that the lack of training data featuring significant black and white samples might be a contributing factor. After collecting more data and expanding the training set, the issue was resolved, and the model performance with the sigmoid activation function was reevaluated, showing improvement comparable to the clamp function.
+    
+    \subsubsection{Discoloration in the Model Output}
+    
+    The model faces similar discoloration issues as mentioned in section \autoref{sec:sigmoid_vs_clamp} with certain colors. When the model starts with a random pixel, it often struggles to consistently generate the intended pattern in that color or starting pattern. Some evidence suggests that the training set may be too small, as the issue was less noticeable with a larger dataset. However, this problem has not yet been resolved, and further research is needed.
+    
+    
+
+
+    \subsubsection{Multi GPU Training}
+    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code has been adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
     \subsubsection{Discriminator}
     %TODO: Add more information about the discriminator
     To get a better result a discriminator can be used to enhance the output of the model. In this case, a discriminator is added after the model prediction.
 
     For these XX new rows are generated and then the discriminator checks if the generated content is artifice or an original image. In a perfect scenario the discriminator can't distinguish between the generated content and the original content and the loss will balance out at 50
+
 
 \newpage
 

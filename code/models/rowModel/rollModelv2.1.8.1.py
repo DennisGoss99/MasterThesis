@@ -278,7 +278,7 @@ class Trainer:
 
 
 def main(rank: int, world_size: int, args, save_every: int, total_epochs: int):
-    ddp_setup(rank, world_size)
+    # ddp_setup(rank, world_size)
 
     model = ColumnTransformer()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -310,7 +310,9 @@ if __name__ == '__main__':
                 os.makedirs(outputdir + '/tempModel/')
 
             world_size = torch.cuda.device_count()
-            mp.spawn(main, args=(world_size, args.save_every, args.total_epochs, args.batch_size), nprocs=world_size)
+
+            print(f"Running DDP with {world_size} GPUs")
+            mp.spawn(main, args=(world_size, args, 1000, 5), nprocs=world_size)
 
     except Exception as e:
         print(f"An error occurred: {e}")
