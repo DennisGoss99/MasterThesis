@@ -34,7 +34,9 @@
 
 \subsection{Column Image Transformer}
     
-    The Column Image Transformer is a transformer-based model that processes input data in a columnar format as examined in detail see \autoref{sec:IntroColumnModel}.
+    The Column Image Transformer (CIT) is the first transformer-based model approach in this thesis that processes input data in a columnar format as examined in the previous section in more detail see \autoref{sec:IntroColumnModel}.
+
+    This section will go more into detail about the steps form the [Data loader -> Pixel Embedding -> Positional Embedding -> transformer layer -> Pixel Emb ->  Loss calculation and evaluation].
     
     \subsubsection{Get Data as Columns}
 
@@ -92,11 +94,6 @@ The combined embedding, \texttt{x}, is calculated as:
     By utilizing grayscale input and outputs, we simplify the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis compared to the intricate color variations present in RGB images. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
 
 
-    \subsection{testing the model capabilities}
-    (layer norm(sigmoid vs clamp), color shift to gray (illustrations of average color), Text tokens vs imgs tokens)
-
-    Several tests are conducted to evaluate the model's capabilities and performance.
-
     \subsubsection{Sigmoid Compared to Clamp}
     \label{sec:sigmoid_vs_clamp}
     
@@ -109,19 +106,9 @@ The combined embedding, \texttt{x}, is calculated as:
     \subsubsection{Discoloration in the Model Output}
     
     The model faces similar discoloration issues as mentioned in section \autoref{sec:sigmoid_vs_clamp} with certain colors. When the model starts with a random pixel, it often struggles to consistently generate the intended pattern in that color or starting pattern. Some evidence suggests that the training set may be too small, as the issue was less noticeable with a larger dataset. However, this problem has not yet been resolved, and further research is needed.
-    
-    
-
-
+        
     \subsubsection{Multi GPU Training}
     To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code has been adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
-
-    \subsubsection{Discriminator}
-    %TODO: Add more information about the discriminator
-    To get a better result a discriminator can be used to enhance the output of the model. In this case, a discriminator is added after the model prediction.
-
-    For these XX new rows are generated and then the discriminator checks if the generated content is artifice or an original image. In a perfect scenario the discriminator can't distinguish between the generated content and the original content and the loss will balance out at 50
-
 
 \newpage
 
