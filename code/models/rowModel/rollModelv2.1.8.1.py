@@ -36,19 +36,19 @@ torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
 
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
-BLOCK_SIZE = 256 
-IMAGE_SIZE = 257 # Must be at least >= Blocksize +1
+BLOCK_SIZE = 511 
+IMAGE_SIZE = 512 # Must be at least >= Blocksize +1
 
 CHANNELS_IMG = 3
 
-N_EMBD = 512
-N_HEAD = 8
-N_LAYER = 8
+N_EMBD = 640
+N_HEAD = 9
+N_LAYER = 9
 DROPOUT = 0.2
 
-VERSION = "2.1.8.1_newData_256"
+VERSION = "2.1.8.1_newData_511"
 
 #----------------------------------------------
 
