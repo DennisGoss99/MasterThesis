@@ -22,6 +22,7 @@ import torchvision.utils as vutils
 import argparse
 import numpy as np
 import time
+import traceback
 
 import sys
 module_dir = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
@@ -37,8 +38,8 @@ LEARNING_RATE = 3e-5
 
 BATCH_SIZE = 64
 
-BLOCK_SIZE = 256
-IMAGE_SIZE = 256
+BLOCK_SIZE = 256 
+IMAGE_SIZE = 257 # Must be at least >= Blocksize +1
 
 CHANNELS_IMG = 3
 
@@ -47,7 +48,7 @@ N_HEAD = 8
 N_LAYER = 8
 DROPOUT = 0.2
 
-VERSION = "2.1.8.0_newData_256"
+VERSION = "2.1.8.1_newData_256"
 
 #----------------------------------------------
 
@@ -87,7 +88,11 @@ def ddp_setup(rank, world_size):
     os.environ["Master_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = "12355"
     torch.cuda.set_device(rank)
-    init_process_group(backend="nccl", rank=rank, world_size=world_size)
+    torch.distributed.init_process_group(
+        backend='nccl',  # 'nccl' is recommended for GPU use, 'gloo' can be used for CPU
+        rank=rank,
+        world_size=world_size
+    )
 
 
 #----------------------------------------------
@@ -234,71 +239,128 @@ class Trainer:
         gpu_id: int,
         save_every: int,
         outputdir: str,
-        logger,
+        logger = None,
+        val_data = None,
+        train_val_data = None,
     ) -> None:
         self.gpu_id = gpu_id
         self.model = model.to(gpu_id)
         self.train_data = train_data
         self.optimizer = optimizer
-        self.save_every = save_every
         self.model = DDP(model, device_ids=[gpu_id])
         self.outputdir = outputdir
         self.logger = logger
 
+        self.eval_i = save_every
+        self.start_time = time.time()
+
         if(self.gpu_id == 0):
+            self.val_loader = DataLoader(val_data, batch_size=1, shuffle=True)
+            self.train_val_loader = DataLoader(train_val_data, batch_size=1, shuffle=True)
+
             self.writer = SummaryWriter(f"{self.outputdir}/tempLog/{VERSION}-{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}/")
             self.logger = setup_logger(self.outputdir, VERSION)
 
 
     def _run_epoch(self, epoch):
         b_sz = len(next(iter(self.train_data))[0])
-        print(f"[GPU{self.gpu_id}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
+
+        if(self.gpu_id == 0):
+            self.logger.debug(f"[GPU{self.gpu_id}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
+        else: 
+            print(f"[GPU{self.gpu_id}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
+
+        loss_sum = 0.0
+
         self.train_data.sampler.set_epoch(epoch)
-        for source, targets in self.train_data:
+        for idx, (source, _) in enumerate(self.train_data):
             source = source.to(self.gpu_id)
-            targets = targets.to(self.gpu_id)
+            sourceRaw = source.squeeze(0)
+            
+            x, y = get_batch(sourceRaw) # (B,C,H)
+            y = y[:,:BLOCK_SIZE,:]
 
+            logits, loss = self.model(x, y)
+            loss_sum += loss.item()
+            self.optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            self.optimizer.step()
 
+            if(self.gpu_id == 0 and idx % self.eval_i == 0 and idx != 0):
+                train_loss = loss_sum / self.eval_i
+                val_loss = 0.0
+                val_loss = validate(self.model, self.val_loader)
+                train_val_loss = validate(self.model, self.train_val_loader)
 
-        
+                self.logger.debug(f'Epoch {epoch}, Iteration {idx}: Train Loss: {train_loss}, Train_val Loss: {train_val_loss}, Validation Loss: {val_loss}, {int((time.time() - self.start_time) // 3600):02d}:{int(((time.time() - self.start_time) % 3600) // 60):02d}:{int((time.time() - self.start_time) % 60):02d}')
+                
+                loss_sum = 0.0
+                self.writer.add_scalars('Losses', {'Training Loss': train_val_loss, 'Validation Loss': val_loss}, epoch * b_sz // self.eval_i + idx // self.eval_i)
+    
+            # else:
+            #     print(f"GPU{self.gpu_id}: Epoch {epoch}, Iteration {idx}")
 
     def _save_checkpoint(self, epoch):
         ckp = self.model.module.state_dict()
-        PATH = model_saveFile(self.outputdir, VERSION, e)
+        PATH = model_saveFile(self.outputdir, VERSION, epoch)
         torch.save(ckp, PATH)
-        print(f"Epoch {epoch} | Training checkpoint saved at {PATH}")
+        if(self.gpu_id == 0):
+            self.logger.debug(f"Epoch {epoch} | Training checkpoint saved at {PATH}")
 
     def train(self, max_epochs: int):
         for epoch in range(max_epochs):
             self._run_epoch(epoch)
 
+            if self.gpu_id == 0:
+                self._save_checkpoint(epoch)
+
         if(self.gpu_id == 0):
             self.writer.close()
 
 
+def main(rank: int, world_size: int, args, save_every: int, total_epochs: int, train_data, val_data, train_val_data):
 
-def main(rank: int, world_size: int, args, save_every: int, total_epochs: int):
+    if(rank == 0):
+        logger = setup_logger(args.out, VERSION)
+
+        logger_write_parameter(
+            logger=logger,
+            device=device, 
+            dataset=args.dataset,
+            train_size=-1,
+            valsize=0,
+            trainvalsize=0,
+            repeatdataset=args.repeatdataset,
+            learning_rate=LEARNING_RATE,
+            batch_size=BATCH_SIZE,
+            image_size=IMAGE_SIZE,
+            block_size=BLOCK_SIZE,
+            channels_img=CHANNELS_IMG,
+            n_embd=N_EMBD,
+            n_head=N_HEAD,
+            n_layer=N_LAYER,
+            dropout=DROPOUT,
+            version=VERSION,
+            model_parameter=count_parameters(ColumnTransformer())
+        )
+    
+
+
     ddp_setup(rank, world_size)
 
     model = ColumnTransformer()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-    dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=1,
-               random_vertical_flip=False, random_horizontal_flip=False,
-               crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
-               jitter_contrast=0, jitter_saturation=0, jitter_hue=0)
-    
-    train_data = DataLoader(
-        dataset,
-        batch_size=BATCH_SIZE,
-        pin_memory=True,
-        shuffle=False,
-        sampler=DistributedSampler(dataset)
-    )
+    train_loader = DataLoader(train_data, batch_size=1, pin_memory=True, shuffle=False, sampler=DistributedSampler(train_data))
 
-    trainer = Trainer(model, train_data, optimizer, rank, save_every)
+    if(rank == 0):
+        trainer = Trainer(model, train_loader, optimizer, rank, save_every, args.out, logger, val_data, train_val_data)
+    else:
+        trainer = Trainer(model, train_loader, optimizer, rank, save_every, args.out)
+
     trainer.train(total_epochs)
     destroy_process_group()
+
 
 
 if __name__ == '__main__':
@@ -309,8 +371,41 @@ if __name__ == '__main__':
             if not os.path.exists(outputdir +'/tempModel/'):
                 os.makedirs(outputdir + '/tempModel/')
 
+            
+
+
+            dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=1,
+                random_vertical_flip=False, random_horizontal_flip=False,
+                crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
+                jitter_contrast=0, jitter_saturation=0, jitter_hue=0)
+
+            total_size = len(dataset)
+
+            if args.valsize.endswith('%'):
+                val_size = int(total_size * (int(args.valsize[:-1]) / 100))
+            else: 
+                val_size = int(args.valsize)
+
+            train_size = total_size - val_size
+
+            if args.trainvalsize.endswith('%'):
+                train_val_size = int(train_size * (int(args.trainvalsize[:-1]) / 100))
+            else: 
+                train_val_size = int(args.valsize)
+
+            train_size = len(dataset) - val_size  
+            train_data, val_data = random_split(dataset, [train_size, val_size])
+
+            train_val_indices = np.random.choice(len(train_data), train_val_size, replace=False)
+            train_val_data = Subset(train_data, train_val_indices)
+
             world_size = torch.cuda.device_count()
-            mp.spawn(main, args=(world_size, args.save_every, args.total_epochs, args.batch_size), nprocs=world_size)
+
+            mp.spawn(main, args=(world_size, args, 1000, args.iter, train_data, val_data, train_val_data), nprocs=world_size)
+
+            
 
     except Exception as e:
         print(f"An error occurred: {e}")
+        traceback.print_exc()
+        raise e
