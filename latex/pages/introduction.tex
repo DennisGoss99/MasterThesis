@@ -1,7 +1,7 @@
 
 Transformers are widely used in the generation of text for large language models (LLMs), such as GPT \autocite{GPT2radford2019}, LaMMA \autocite{touvron2023llama}, among others. This thesis aims to extend the application of traditional Transformer-based architectures to generate texture assets, a significant departure from the conventional image-generating methods that primarily rely on stable diffusion techniques or Generative Adversarial Networks (GANs).
 
-The primary objective of this study is to develop a model capable of continuously generating textures for a given seed image or drawing. This approach is analogous to text generation in LLMs, where the model expands upon an initial sentence. To realize this, two distinct models have been developed and trained, each incorporating unique adaptations to leverage the inherent advantages of Transformer-based models in texture generation.
+The primary objective of this study is to develop a model capable of continuously generating textures for a given seed image or drawing, thereby providing a simple method for video game prototyping to generate texture assets. This approach is analogous to text generation in LLMs, where the model expands upon an initial sentence. To realize this, two distinct models have been developed and trained, each incorporating unique adaptations to leverage the inherent advantages of Transformer-based models in texture generation.
 
 The first model named the Column Image Transformer (CIT), processes images by segmenting them into vertical columns. This design allows the model to predict subsequent pixels within a column using the context information provided by previous pixels.
 

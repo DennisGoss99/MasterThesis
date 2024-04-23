@@ -5,8 +5,8 @@
 
 \begin{figure}[H]
     \centering
-    \foreach \i in {-1,...,33}{
-      \begin{subfigure}[t]{0.146\textwidth}
+    \foreach \i in {-1,...,18}{
+      \begin{subfigure}[t]{0.23\textwidth}
         \centering       
         \ifnum \i=-1
             \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/DataCombined_lab.png}
@@ -19,22 +19,55 @@
         \label{fig:lab_sub\i}
       \end{subfigure}
       % Use the modulo operation to determine if a line break should be added
-      \pgfmathparse{int(mod(\i+2,6))}
+      \pgfmathparse{int(mod(\i+2,4))}
       \ifnum\pgfmathresult=0
           \newline
       \else
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.146\textwidth}
+    \begin{subfigure}[t]{0.23\textwidth}
+        \centering
+        % No image to include, so this is left empty
+        \caption*{} % Empty caption
+    \end{subfigure}
+    \caption*{}
+    \addtocounter{figure}{-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \foreach \i in {19,...,33}{
+      \begin{subfigure}[t]{0.23\textwidth}
+        \centering       
+        \ifnum \i=-1
+            \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/DataCombined_lab.png}
+            \caption{All Data}
+        \else
+            \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/labPlot_\i}
+            \caption{source \i}
+        \fi
+
+        \label{fig:lab_sub\i}
+      \end{subfigure}
+      % Use the modulo operation to determine if a line break should be added
+      \pgfmathparse{int(mod(\i+2,4))}
+      \ifnum\pgfmathresult=0
+          \newline
+      \else
+          \hfill
+      \fi
+    }
+    \begin{subfigure}[t]{0.23\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
     \end{subfigure}
     \caption{Visualization of datasets plotted in the LAB color space}
-    \label{fig:lab_all}
+    \label{fig:lab_all2}
 
 \end{figure}
+
 
 \newpage
 
@@ -42,8 +75,8 @@
 
 \begin{figure}[H]
     \centering
-    \foreach \i in {-1,...,33}{
-      \begin{subfigure}[t]{0.146\textwidth}
+    \foreach \i in {-1,...,18}{
+      \begin{subfigure}[t]{0.23\textwidth}
         \centering
 
         \ifnum \i=-1
@@ -56,14 +89,47 @@
         \label{fig:rgb_sub\i}
       \end{subfigure}
       % Use the modulo operation to determine if a line break should be added
-      \pgfmathparse{int(mod(\i+2,6))}
+      \pgfmathparse{int(mod(\i+2,4))}
       \ifnum\pgfmathresult=0
           \newline
       \else
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.146\textwidth}
+    \begin{subfigure}[t]{0.23\textwidth}
+        \centering
+        % No image to include, so this is left empty
+        \caption*{} % Empty caption
+    \end{subfigure}
+    \caption*{}
+    \addtocounter{figure}{-1}
+
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \foreach \i in {19,...,33}{
+      \begin{subfigure}[t]{0.23\textwidth}
+        \centering
+
+        \ifnum \i=-1
+            \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/rgb/DataCombined_rgb.png}
+        \caption{All Data}
+        \else
+            \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/rgb/rgbPlot_\i}
+            \caption{source \i}
+        \fi
+        \label{fig:rgb_sub\i}
+      \end{subfigure}
+      % Use the modulo operation to determine if a line break should be added
+      \pgfmathparse{int(mod(\i+2,4))}
+      \ifnum\pgfmathresult=0
+          \newline
+      \else
+          \hfill
+      \fi
+    }
+    \begin{subfigure}[t]{0.23\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
@@ -72,6 +138,7 @@
     \label{fig:rgb_all}
 
 \end{figure}
+
 
 \newpage
 

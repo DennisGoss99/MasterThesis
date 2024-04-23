@@ -113,3 +113,24 @@ def forward(self, idx, targets=None):
         
     \subsubsection{Multi GPU Training}
     To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code has been adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
+
+    \subsubsection{Training the Model}
+    2.3.5 Training Protocols
+    Discuss the training process, highlighting any unique considerations for the spiral data format.
+
+    2.3.6 Optimization and Loss Functions
+    Specific optimization techniques and loss functions that are effective for spiral-based models.
+
+    \subsubsection{Experimental Results}
+    2.3.7 Performance Benchmarks
+    Present empirical results showing the efficacy of the spiral image transformer compared to traditional methods.
+
+    2.3.8 Case Studies and Application Areas
+    Showcase real-world applications and case studies where the spiral image transformer provides significant benefits.
+
+    \subsubsection{Challenges and Limitations}
+    2.3.9 Identified Challenges
+    Discuss specific challenges encountered during the development and implementation phases.
+
+    2.3.10 Limitations of the Spiral Transformer
+    Critically analyze the limitations and potential drawbacks of using a spiral approach.
