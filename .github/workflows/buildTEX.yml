@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'latex/masterthesis.tex'
-      - 'latex/pages/*.tex'
+      - 'latex/pages/**/*.tex'
   workflow_dispatch:
 
 jobs:
