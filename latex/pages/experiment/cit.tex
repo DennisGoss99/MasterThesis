@@ -15,7 +15,7 @@
     
     \subsubsection{Get Data as Columns}
 
-    The data is loaded into a DataLoader object as described in \autoref{sec:DataHandling} and iterated over to extract it as a 4-dimensional tensor (Batch, Color, Height, Width). This data is reshaped into a columnar format, resulting in two tensors: the \(source\) and \(targets\), both with the shape (Batch, Height, Color). The target tensor is shifted one pixel downwards to the prediction of subsequent pixels by the model. This reshaping and shifting method is commonly employed in transformer-style learning because it enables the model to process data more efficiently in terms of computational speed and resource utilization. The source tensor is then fed into the model, and its output is compared against the targets using the Mean Squared Error (MSE) loss function.
+    The data is loaded into a DataLoader object as described in \autoref{sec:DataHandling} and iterated over to extract it as a 4-dimensional tensor (Batch, Color Channels, Height, Width). This data is reshaped into a columnar format, resulting in two tensors: the \(source\) and \(targets\), both with the shape (Batch, Height, Color Channels). The target tensor is shifted one pixel downwards to the prediction of subsequent pixels by the model. This reshaping and shifting method is commonly employed in transformer-style learning because it enables the model to process data more efficiently in terms of computational speed and resource utilization. The source tensor is then fed into the model, and its output is compared against the targets using the Mean Squared Error (MSE) loss function.
 
 \begin{figure}[H]
 \centering
@@ -29,7 +29,7 @@ def get_batch(data):
     source = rearrange(source, 'c h b -> b h c')
     targets = rearrange(targets, 'c h b -> b h c')
 
-    return x, y
+    return source, targets
 \end{lstlisting}
 \caption{Python function to convert data into a columnar format}
 \label{fig:get_batch_CIT}
@@ -77,6 +77,7 @@ def forward(self, idx, targets=None):
 \end{figure}
    
     \subsubsection{Transformer Layer}
+    \label{sec:transformer_CIT}
 
     The Transformer layer forms the core of the model's architecture and is crucial for processing the data. It utilizes self-attention mechanisms \autocite{vaswani2023attention} to weigh the importance of different pixels relative to each other, allowing the model to focus on relevant parts of the input when predicting the next pixel in a column. 
 
