@@ -1,14 +1,48 @@
+
+
 \subsection{Spiral Image Transformer}
 
-    As explained in the previous section (see Section \ref{sec:IntroSpiralModel}), the spiral model is a transformer-based model that employs a spiral architecture to process input data. 
+    The Spiral Image Transformer, as implied by its name, is a transformer-based model specifically designed to process image data by unrolling pixels in a spiral pattern. This approach stands in contrast to the CIT Model, which processes data using a column-by-column method.
 
-    \subsubsection{Spiral}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{imgs/SITModel.png}
+        \caption{Spiral Image Transformer Model}
+        \label{fig:SpiralImageTransformer}
+    \end{figure}
 
-    To convert the 3-dimensional data (color channels, image height, image width) into a spiral form, the data must be unrolled into one dimension, resulting in an output format of (color channels, spiral length). Consequently, the data width and the height dimensions must be squeezed into a single dimension. This new form can then be utilized similarly to the data in the Column Image Transformer. As the data is flattened into a single dimension, it allows for an easy addition of positional embedding. It is the same process as in the Column Image Transformer see \autoref{sec:CIT_PositionalEmbedding}.
+    The visual representation above illustrates the operational steps of the SIT model. Similar to the CIT model, it begins by loading and converting the data. However, it diverges in its method by transforming the data into a spiral format, instead of using the columnar approach employed by the CIT. Like its counterpart, this model embeds pixels, from 3 colors to a higher-dimensional embedding space represented by \(N_{\text{EMBD}}\). Positional embeddings are then added. The embedded data is further processed by a (MLP), which converts it back into the original 3-color format. Finally, the spiral-formatted data is restructured into the original image layout.
+
+    \subsubsection{Spiral Data Processing}
+
+    To transform the data, which is loaded by the DataLoader and iterated over, into a spiral format, the width and height dimensions are first squeezed into a single dimension. This resulting tensor has the shape (Batch, Color Channels, Spiral Length). The next step involves indexing the data into the spiral form. For more detailed information on this indexing process, refer to \autoref{fig:spiral_indexing_1}. The restructured tensor is then processed like how the data is handled in the Column Image Transformer. The following code block illustrates the process used to convert the data into a spiral format.
+
+    \begin{figure}[H]
+        \centering
+        \begin{lstlisting}[language=Python]
+def get_batch(data):
+    # Batch_size, Color Channels, Height, Width
+    B, C, H, W = data.shape
+
+    spiral_data = torch.zeros_like(data.view(B, C, -1))
+
+    spiral_data[:,:,spiral_indices.flatten()] = data.view(B, C, -1)
+
+    source = spiral_data[:, :, :BLOCK_SIZE]
+    label = spiral_data[:, :, 1:BLOCK_SIZE+1]
+
+    source = rearrange(source, 'b c h -> b h c')
+    label = rearrange(label, 'b c h -> b h c')
+
+    return source, label
+        \end{lstlisting}
+        \caption{Get data in a spiral form for the SIT model}
+        \label{fig:spiral_indexing_code}
+    \end{figure}
 
     \subsubsection{Spiral generation}
     \label{sec:spiral_generation}
-    The conversion of data into a spiral form needs to be highly efficient because the code block will execute for every image (batch) in the dataset. Therefore, a simple nested for loop is insufficient. In this example, fancy indexing is used to convert the data into a spiral form. Thus, the data tensor is indexed with a two-dimensional tensor containing the indices of the spiral form.
+    The conversion of data into a spiral form needs to be highly efficient because the code block will execute for every training step. Therefore, a simple nested for loop is insufficient to rearrange the data into the desired form. In this example, fancy indexing is used to convert the data into a spiral form. Thus, the data tensor is indexed with a flattened two-dimensional tensor containing the indices of the spiral form.
 
     At the start of the model training script, one indexing spiral is created to be used for all images in the dataset. The following code block illustrates the creation of the spiral index tensor.
 
@@ -46,10 +80,7 @@ def create_spiral(n): # n = width and height
 
     The code above generates a square matrix of size n by n, then fills it with numbers in a spiral pattern, starting from the outer edge and spiraling inwards clockwise. Each cell of the matrix is assigned a unique number, beginning from the highest value in the top-left corner and decreasing by one with each step along the spiral path until reaching zero at the center or the end of the spiral. The spiral formation is achieved by moving right, then down, then left, then up, and repeating this sequence, adjusting direction whenever the next step would go out of bounds or into a cell that's already been filled.
 
-
-    \subsection{Fancy Indexing into the Spiral form}
-
-    The spiral index tensor is then used to index the data tensor, effectively converting it into a spiral form. The following image illustrates the process of converting a 7x7 image.
+    The generated spiral index tensor is then used to index the data tensor, effectively converting it into a spiral form. The following image illustrates the process of converting a 7x7 image.
     
     
     \begin{figure}[H]
@@ -66,25 +97,33 @@ def create_spiral(n): # n = width and height
     \label{fig:spiral_indexing_0}        
     \end{figure}
 
-    As you can see in \autoref{fig:spiral_indexing_1}, the pixels of the image are labeled with their respective indices 0, \dots, 43. The image is then unrolled into a single dimension, as shown in \autoref{fig:spiral_indexing_0}. The centering pixel is the first element of the spiral, and the spiral continues counterclockwise from there. In the model script, the dimensions for width and height typically exceed 7, yet the underlying process remains unchanged.
-
-\begin{figure}[H]
-\centering
-\begin{lstlisting}[language=Python]
-  spiral_indices = torch.tensor(create_spiral(IMAGE_SIZE))
-
-  # [...]
-  # Batch_size, Color_channels, Height, Width
-  B, C, H, W = data.shape
-
-  spiral_data = torch.zeros_like(data.view(B, C, -1))
-
-  spiral_data[:,:,spiral_indices.flatten()] = data.view(B, C, -1)
-
-  # [...]
-\end{lstlisting}
-\caption{Fancy indexing to convert data into a spiral form}
-\label{fig:spiral_indexing_code}
-\end{figure}
+    As shown in \autoref{fig:spiral_indexing_1}, the pixels of the image are labeled with their respective indices 0, \dots, 43. The image is then unrolled into a single dimension, as shown in \autoref{fig:spiral_indexing_0}. The centering pixel is the first element of the spiral, and the spiral continues counterclockwise from there. In the model script, the dimensions for width and height typically exceed a width of 7, yet the underlying process remains unchanged.
 
 
+
+\subsubsection{Model Architecture}
+
+Similar to the CIT model, the addition of positional embeddings is handled in the same manner. This is because the data is transformed into a spiral pattern, allowing the addition of positional embeddings to remain unchanged. Additionally, the transformer layer operates identically. For more information on the transformer layer, see the CIT model \autoref{sec:transformer_CIT}.
+
+
+\subsubsection{Training the Model}
+2.3.5 Training Protocols
+Discuss the training process, highlighting any unique considerations for the spiral data format.
+
+2.3.6 Optimization and Loss Functions
+Specific optimization techniques and loss functions that are effective for spiral-based models.
+
+\subsubsection{Experimental Results}
+2.3.7 Performance Benchmarks
+Present empirical results showing the efficacy of the spiral image transformer compared to traditional methods.
+
+2.3.8 Case Studies and Application Areas
+Showcase real-world applications and case studies where the spiral image transformer provides significant benefits.
+
+
+\subsubsection{Challenges and Limitations}
+2.3.9 Identified Challenges
+Discuss specific challenges encountered during the development and implementation phases.
+
+2.3.10 Limitations of the Spiral Transformer
+Critically analyze the limitations and potential drawbacks of using a spiral approach.

@@ -40,6 +40,7 @@ def logger_write_parameter(logger, device, dataset, train_size, valsize, trainva
     logger.info(f'VERSION={version}')
     logger.info(f'----------------')
     logger.info(f'device={device}')
+    logger.info(f'gpus={torch.cuda.device_count()}')
     logger.info(f'dataset={dataset}')
     logger.info(f'train_size={train_size}')
     logger.info(f'valsize={valsize}')

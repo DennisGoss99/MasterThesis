@@ -35,5 +35,9 @@
     %Todo : write about the logging the loss each 1000 steps val los train loss and the images
 
 
+    \subsubsection{Multi GPU Training}
+    
+    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
+
 
 
