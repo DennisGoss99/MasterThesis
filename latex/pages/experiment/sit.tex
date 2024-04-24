@@ -114,11 +114,21 @@ Discuss the training process, highlighting any unique considerations for the spi
 Specific optimization techniques and loss functions that are effective for spiral-based models.
 
 \subsubsection{Experimental Results}
-2.3.7 Performance Benchmarks
-Present empirical results showing the efficacy of the spiral image transformer compared to traditional methods.
+Multiple experiments are conducted to evaluate the performance of the SIT model. The experiments are designed to test the models ability to generate images, the quality of the generated images, and the models performance on different datasets. The results are analyzed to identify the strengths and weaknesses of the model.
 
-2.3.8 Case Studies and Application Areas
-Showcase real-world applications and case studies where the spiral image transformer provides significant benefits.
+    \begin{itemize}
+        \item \textbf{Color test:} To test the models capability to generate certain colors the model is given a test image with one single color filling the whole context. Then the model generates the next flowing 32 pixels. 
+        
+        %TODO: 
+        TODO: Add color test images models output
+
+        \item \textbf{Zebra pattern test:} The second test is to see if the model is capable of generating a zebra pattern. The model is given a vertical and a horizontal test image with a black and white colored zebra pattern with a pixel width of 3. The model then generates the next 32 pixels.
+        
+        %TODO:
+        TODO: Add zebra pattern test images models output
+
+        \item \textbf{Spiral Pattern test:} The third test is to see if the model is capable of generating a full image. The model is given a test image with a 4x4 pixel pattern. The model then generates the next 32 pixels.
+    \end{itemize}
 
 
 \subsubsection{Challenges and Limitations}
