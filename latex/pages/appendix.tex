@@ -139,6 +139,31 @@
 
 \end{figure}
 
+\newpage
+\begin{landscape}
+\subsection{Trained Models with hyperparameters}
+\label{sec:trained_models_hyperparameters}
+
+
+    \begin{table}[H]
+    \centering
+    \caption{Model Configuration Overview}
+    \scriptsize
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+    \toprule
+    MODEL & VER. & BATCH\_SIZE & BLOCK\_SIZE & N\_EMBD & N\_HEAD & N\_LAYER & DROPOUT & GPUS & DATASET & FINAL VAL\_LOSS & DURATION \\
+    \midrule
+    \multirow{2}{*}{\rotatebox{90}{CIT}} % Rotates CIT label by 90 degrees
+    & 1.0 & 32 & 512 & 768 & 12 & 12 & 0.1 & 4 & ImageNet & 0.004 & 24h \\
+    & 1.1 & 64 & 1024 & 1024 & 16 & 16 & 0.1 & 8 & CIFAR-10 & 0.004 & 12h \\
+    \midrule
+    \multirow{2}{*}{\rotatebox{90}{SIT}} % Rotates SIT label by 90 degrees
+    & 1.0 & 32 & 512 & 768 & 12 & 12 & 0.1 & 4 & ImageNet & 0.004 & 24h \\
+    & 1.1 & 64 & 1024 & 1024 & 16 & 16 & 0.1 & 8 & CIFAR-10 & 0.004 & 12h \\
+    \bottomrule
+    \end{tabular}
+    \end{table}
+\end{landscape}
 
 \newpage
 

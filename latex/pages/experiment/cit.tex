@@ -111,10 +111,13 @@ def forward(self, idx, targets=None):
     %TODO:
     TODO: Add more information about the Classification and Regression Results
         
-    \subsubsection{Multi GPU Training}
-    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code has been adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
     \subsubsection{Training the Model}
+
+    The training process starts by selecting the hyperparameters and arguments for the model. To test the basic functionality of the model, the training process is kept simple, and they are trained on a single GPU. Most of the training is done via the Slurm cluster, which uses a batch script to configure the hardware and training parameters. All the Parameters can be found in detail in the appendix \autoref{sec:trained_models_hyperparameters}.
+    
+    
+
     2.3.5 Training Protocols
     Discuss the training process, highlighting any unique considerations for the spiral data format.
 
