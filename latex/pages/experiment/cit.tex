@@ -12,10 +12,6 @@
 
     The image above shows the steps carried out by the CIT model. The input data is reshaped into a columnar format, which is then embedded into a higher-dimensional space. The positional embedding layer adds positional context to the input data. The transformer layer processes the data, and the output is then transformed back into a columnar format. After going through a final layer normalization and another MLP that converts back from the embedded layer to 3 colors, the model is trained using a Mean Squared Error (MSE) loss function.
 
-
-    %TODO: Add more information and a illustration
-    This section will go more into detail about the steps form the [Data loader -> Pixel Embedding -> Positional Embedding -> transformer layer -> Pixel Emb ->  Loss calculation and evaluation].
-
     \subsubsection{Get Data as Columns}
 
     The data is loaded into a DataLoader object as described in \autoref{sec:DataHandling} and iterated over to extract it as a 4-dimensional tensor (Batch, Color Channels, Height, Width). This data is reshaped into a columnar format, resulting in two tensors: the \(source\) and \(targets\), both with the shape (Batch, Height, Color Channels). The target tensor is shifted one pixel downwards to the prediction of subsequent pixels by the model. This reshaping and shifting method is commonly employed in transformer-style learning because it enables the model to process data more efficiently in terms of computational speed and resource utilization. The source tensor is then fed into the model, and its output is compared against the targets using the Mean Squared Error (MSE) loss function.
