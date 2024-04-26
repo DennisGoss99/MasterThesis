@@ -122,20 +122,95 @@ def forward(self, idx, targets=None):
     Discuss the training process, highlighting any unique considerations for the spiral data format.
 
     \subsubsection{Experimental Results}
+
+    Multiple experiments are conducted to evaluate the performance of the CIT model. These experiments are designed to test the model's ability to generate images, the quality of the generated images, and the model's performance across different scenarios. The results are analyzed to identify the strengths and weaknesses of the model.
     
-    Multiple experiments are conducted to evaluate the performance of the CIT model. The experiments are designed to test the models ability to generate images, the quality of the generated images, and the models performance on different datasets. The results are analyzed to identify the strengths and weaknesses of the model.
-
+    In each test, the end of the seed pixels are marked with a purple line on the left side of the image.
+    
     \begin{itemize}
-        \item \textbf{Color test:} To test the models capability to generate certain colors the model is given a test image with one single color filling the whole context. Then the model generates the next flowing 32 pixels. 
-        
-        %TODO: 
-        TODO: Add color test images models output
+        \item \textbf{Color test:} To assess the model's capability to generate specific colors, it is challenged with 11 different images with a width of 32 and a height of 128 pixels. Each test image is composed of a single color filling 128 positions in the model's context. The model then generates the next 32 pixels for each image.
+    
+        \begin{figure}[H]
+            \centering
+            % First row
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.7.1_OldData.png} 
+                \subcaption{Model[0] 2.1.7.1}
+                \label{fig:test1_M0_Cit}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_128.png} 
+                \subcaption{Model[1] 2.1.8.1 [128 Context]}
+                \label{fig:test1_M1_Cit}
+            \end{minipage}
+    
+            % Second row
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_256.png} 
+                \subcaption{Model[2] 2.1.8.1 [256 Context]}
+                \label{fig:test1_M2_Cit}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_512.png} 
+                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \label{fig:test1_M3_Cit}
+            \end{minipage}
+            \caption{Color test with four different models}
+        \end{figure}
+    
+        As shown in the images above, Model [0] struggles to generate the correct colors due to the limited size of its old small dataset compared to Models [1-3]. Model [1] generally produces accurate colors but faces difficulties with some. Model [2] generates all colors correctly, but inconsistencies start appearing in column 8. The model may begin changing colors due to its training to recognize patterns such as flowers or carpets in the training data. Model [3] consistently generates the correct colors but begins to create patterns in some columns, potentially indicating that the model is overfitting.
+ 
+        \item \textbf{Zebra pattern test:} The second test assesses whether the model can generate a zebra pattern. The model is provided with both a vertical and a horizontal test image featuring black and white stripes, each stripe being 4 pixels wide. It then generates the next 32 pixels.
 
-        \item \textbf{Zebra pattern test:} The second test is to see if the model is capable of generating a zebra pattern. The model is given a vertical and a horizontal test image with a black and white colored zebra pattern with a pixel width of 3. The model then generates the next 32 pixels.
-        
-        %TODO:
-        TODO: Add zebra pattern test images models output
-        
+        \begin{figure}[H]
+            \centering
+            % First row
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=0.5\textwidth]{imgs/ZebraTestV_2.1.7.1_OldData.png} 
+                \subcaption{Model[0] 2.1.7.1}
+                \label{fig:test2_0_M0_Cit}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=0.5\textwidth]{imgs/ZebraTestV_2.1.8.1_512.png} 
+                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \label{fig:test2_0_M5_Cit}
+            \end{minipage}
+            \caption{Zebra test vertical with two different models}
+        \end{figure}
+
+        As shown in the images above, the model with the newer dataset (Model[3]) generates the colors in the zebra pattern more accurately than the model with the older dataset (Model[0]). Models [1-3] perform similarly. The vertical test is particularly interesting to observe when the column model is altered to see pixels from both the left and the right sides of the current column, assessing whether it can still perfectly continue generating the pattern.
+
+
+        \begin{figure}[H]
+            \centering
+            % Second row
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=0.5\textwidth]{imgs/ZebraTestH_2.1.7.1_OldData.png} 
+                \subcaption{Model[1] 2.1.8.1}
+                \label{fig:test2_1_M0_Cit}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.45\textwidth}
+                \centering
+                \includegraphics[width=0.5\textwidth]{imgs/ZebraTestH_2.1.8.1_512.png} 
+                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \label{fig:test2_1_M5_Cit}
+            \end{minipage}
+            \caption{Zebra test horizontal with two different models}
+        \end{figure}
+
+        Unfortunately, the model struggles to generate the zebra pattern horizontally. The model with the newer dataset (Model[3]) more accurately renders the colors in the zebra pattern than the model with the older dataset (Model[0]), but both models struggle to correctly continue the pattern. Model [3] can recognize that the next pixel in the pattern should be dark but quickly loses context. This could be due to the dataset being too small or the model size being insufficient to fully understand the pattern. The images suggest that Model [3] is better than Model [1] but still fails to generate the pattern correctly.
+
 
         \item \textbf{Classification test:} The third test is to see if the model performs equally well as classification model as a regression model. The model is trained on grayscale images and outputs grayscale images. More information can be found in \autoref{sec:ClassificationOrRegression}.
         
@@ -146,8 +221,9 @@ def forward(self, idx, targets=None):
     \end{itemize}
 
     \subsubsection{Challenges and Limitations}
-    2.3.9 Identified Challenges
-    Discuss specific challenges encountered during the development and implementation phases.
 
-    2.3.10 Limitations of the Spiral Transformer
-    Critically analyze the limitations and potential drawbacks of using a spiral approach.
+    The CIT model has some limitations and challenges that require attention. The primary issue is its limited context to only one column, which hampers its ability to generate complex patterns requiring a broader visual spectrum. Additionally, similar to some text-based Transformer models, the CIT model struggles with generating coherent long sequences, often using its recent outputs as a basis for predicting subsequent pixels. This can lead to errors accumulating over time, particularly evident in longer image sequences where the model fails to maintain the specific pattern. 
+
+    To address these limitations, methods used in text-based models, such as scaling up the model size and expanding the training dataset, can be considered. Scaling the model could involve increasing the dimensionality of the embeddings or adding more layers, which might help the model capture more complex dependencies. However, expanding the dataset was not feasible in this thesis due to time constraints and the extensive duration of the dataset collection process.
+
+    Introducing a text prompt feature could significantly enhance the usability and flexibility of the CIT model. This feature would allow users to guide the generation process using descriptive language, making it easier to specify desired outcomes without relying solely on seed pixels. Such a capability would not only improve user interaction but could also potentially help the model deal with complex pattern generation by providing additional contextual information. Exploring this possibility could be a valuable direction for future research.
