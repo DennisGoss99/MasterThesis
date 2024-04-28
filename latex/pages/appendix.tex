@@ -143,27 +143,34 @@
 \label{sec:trained_models_hyperparameters}
 
 
-    \begin{table}[H]
+\begin{table}[H]
     \centering
+    \begin{threeparttable}
     \caption{Model Configuration Overview}
     \scriptsize
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
     \toprule
-    MODEL & Nr. & VER. & BATCH\_SIZE & BLOCK\_SIZE & N\_EMBD & N\_HEAD & N\_LAYER & PARAMETER & GPUS & DATASET & VAL\_LOSS & DURATION \\
+    MODEL & Nr. & VER. & BATCH\_SIZE & BLOCK\_SIZE & N\_EMBD & N\_HEAD & N\_LAYER & PARAMETER\tnote{*} & GPUS & DATASET & VAL\_LOSS\tnote{**}  \\
     \midrule
-    \multirow{2}{*}{\rotatebox{90}{CIT}} % Rotates CIT label by 90 degrees
-    & 0 & 2.1.6.3 & 128 & 128 & 128 & 6 & 6 & X & 1 & small Dataset & ---- & ---- \\
-    & 1 & 2.1.8.0 & 64 & 64 & 128 & 6 & 6 & X & 1 & x512 Dataset & ---- & ---- \\
-    & 2 & 2.1.8.0 Classify & 64 & 64 & 128 & 6 & 6 &X & 1 & x512 Dataset & ---- & ---- \\
-    & 3 & 2.1.8.1 & 64 & 256 & 512 & 8 & 8 & X & 4 & x512 Dataset & ---- & ---- \\
-    & 4 & 2.1.8.2 TODO & 64 & 256 & 512 & 8 & 8 & X & 4 & x512 Dataset & ---- & ---- \\
+    \multirow{5}{*}{\rotatebox{90}{CIT}}
+    & 0 & 2.1.7.0 & 128 & 128 & 128 & 6 & 6 & 1.22 m & 1 & old Dataset & 0.0082  \\
+    & 1 & 2.1.8.0 & 64 & 64 & 128 & 6 & 6 & 1.21 m & 1 & x512 Dataset & 0.0035 \\
+    & 2 & 2.1.8.0 Classify & 64 & 64 & 128 & 6 & 6 & 1.25 m & 1 & x512 Dataset & 1.841 \\
+    & 3 & 2.1.8.0 & 64 & 256 & 512 & 8 & 8 & 25.66 m & 4 & x512 Dataset & 0.0025 \\
+    & 4 & 2.1.8.0 & 32 & 511 & 640 & 9 & 9 & 45.09 m & 4 & x512 Dataset & 0.0024 \\
     \midrule
-    \multirow{2}{*}{\rotatebox{90}{SIT}} % Rotates SIT label by 90 degrees
-    & 5 & 5.0.0.1 & 8 & 4,095 & 128 & 6 & 6 & X & 1 & x512 Dataset & ---- & ---- \\
-    & 6 & 1.1 & 64 & 1024 & 1024 & 16 & 16 & X & 8 & x512 Dataset & ---- & ---- \\
+    \multirow{2}{*}{\rotatebox{90}{SIT}}
+    & 5 & 5.0.1.0 & 8 & 4,095 & 128 & 6 & 6 & 1.73 m & 1 & x512 Dataset & 0.0074 \\
+    & 6 & 5.0.1.0 & 4 & 4,095 & 512 & 8 & 8 & 27.62 m & 1 & x512 Dataset & 0.0027 \\
     \bottomrule
     \end{tabular}
-    \end{table}
+    \begin{tablenotes}
+    \item[*] Figures in millions
+    \item[**] Average of the last 5 validation loss values
+    \end{tablenotes}
+    \end{threeparttable}
+\end{table}
+
 \end{landscape}
 
 \newpage
