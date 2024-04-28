@@ -1,20 +1,24 @@
 
-This section focuses on the evaluation of the performance of the models and offers detail on the futher implementations and extentions that would make sense.
+    In conclusion, this thesis demonstrates the feasibility and potential of using Transformer-based models for texture generation in video game development and use. The Column Image Transformer (CIT) and Spiral Image Transformer (SIT) represent initial approaches and potential ways in which traditional Transformer architectures can be extended beyond text to graphical content generation. Each model offers unique benefits and poses different challenges. Both models require further development to become fully user-friendly and capable of generating assets efficiently.
 
-\subsection{Evaluation of the models}
+\subsection{Evaluation of the Models}
+
+    As a general conclusion, the data suggest that it is possible to quickly generate new assets through this approach. Especially the CIT model can generate new assets in a short amount of time because it does not process the whole image at once and is highly parallelizable. However, this is also a significant disadvantage because it is unable to envision the whole context. In contrast, the Spiral Model, which can see the entire image at once, is unable to generate new assets quickly due to the fact that a context window will become exponentially large (width * height) and because the pixels depend on each other so each pixel needs to be generated after another. The best approach might be to find a middle ground between the two models. For example, using a wider width than in the CIT model or feeding additional information to the model, such as the x position of the pixel to be generated.
+
+    Another addition to the model could be the use of text input as additional information. This would be an easy approach to generate more specific assets and it would be easier to start from no or a smaller amount of seed pixels, similar to DALL-E or Midjourney.
+
+\subsubsection{quality}
+    The following images show generated assets from the CIT and the SIT model.
     
-    As a general conclusion it can be said that the data hints that it is possible to generate quickly new assets trow this approach. Especially the CIT Models is able to generate new assets in a short amount of time due to the fact that it is not seeing the whole image at once. This is also a big disadvantage because it is not able to envison the hole context. In contrast to this is the Spiral Model which is able to see the whole image at once but is not able to generate new assets in a short amount of time du to the fact that a context window will get exponeltioly big \^ 2 widht \* height. The best approach would be to find a middle ground between the two models. For example to use a wider width then on in the CIT model or to feed additional information to the model like the x position of the to generate pixel.
+    
 
-    another addition to the model could be to use a text input as an aditional information. This would be an easy approch to generate more specific assets and it is easier to start form a smaller seedpixel.
+    % \subsubsection{performance}
+    % One the big question is if it is possible to generated assets for video game. Here we can split it into two parts. The first part is to generate assets beforehand in the development cylce and in the second part is is the model so efficient that it is possible to generate assets in real time on a local machine.
 
-    \subsubsection{performance}
-    One the big question is if it is possible to generated assets for video game. Here we can split it into two parts. The first part is to generate assets beforehand in the development cylce and in the second part is is the model so efficient that it is possible to generate assets in real time on a local machine.
-
-    \subsubsection{quality}
-    The following images show generated assets from the CIT and the SIT model. 
+    % \subsection{Execution locally and on the cloud}
 
 
-\subsection{Execution locally and on the cloud}
+
     
 
 \subsection{Further research}
@@ -26,6 +30,3 @@ This section focuses on the evaluation of the performance of the models and offe
     For these XX new rows are generated and then the discriminator checks if the generated content is artifice or an original image. In a perfect scenario the discriminator can't distinguish between the generated content and the original content and the loss will balance out at 50
 
     \subsubsection{LLM Scaling Laws}
-
-
-    \subsection{Stable diffusion/ GANs with convolutional neural network}
