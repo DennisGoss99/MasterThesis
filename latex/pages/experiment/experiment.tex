@@ -39,5 +39,12 @@
     
     To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
+    \subsubsection{Generation of Assets}
 
+    Similar to conventional text-based transformer models, this model generates assets pixel by pixel. Thus, the model is provided with some pixels, denoted as \(\mathbf{x} = (x_1, x_2, \ldots, x_n)\). It then predicts the next pixel, \(x_{n+1}\), based on the learned training data. During generation, the last predicted pixel is appended to the existing sequence, and the updated sequence is used for subsequent predictions.
 
+    \[
+        \mathbf{x}' = \mathbf{x} \cup \{x_{n+1}\}
+    \]
+    
+    This process is repeated until the desired image size is achieved. Consequently, the model can generate assets of the specified size. This approach is utilized for both the CIT and the SIT models.
