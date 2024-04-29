@@ -6,7 +6,7 @@
 
     To build the models, a set of Python libraries is utilized, mainly PyTorch, NumPy, TensorBoard, and Einops. PyTorch serves as the core tool for constructing and training the models.
     
-    The transformer model's code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it has been modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
+    The transformer models code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it has been modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
     
     \subsubsection{Data Handling}
     \label{sec:DataHandling}
@@ -37,7 +37,7 @@
 
     \subsubsection{Multi GPU Training}
     
-    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
+    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the models code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
     \subsubsection{Generation of Assets}
 
