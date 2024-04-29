@@ -102,15 +102,15 @@ def forward(self, source, targets=None):
     
     The model faces similar discoloration issues as mentioned in section \autoref{sec:sigmoid_vs_clamp} with certain colors. When the model starts with a random pixel, it often struggles to consistently generate the intended pattern in that color or starting pattern. Some evidence suggests that the training set may be too small, as the issue was less noticeable with a larger dataset. Generally, transformers require significantly more data to improve performance \autocite{chen2022dearkd}. However, this problem has not yet been resolved, and further research is needed.
 
-    \subsubsection{Classification or Regression}
-    \label{sec:ClassificationOrRegression}
+    % \subsubsection{Classification or Regression}
+    % \label{sec:ClassificationOrRegression}
 
-    To see if the method (Classification / Regression) has a big impact on the performance of the model both methods are tested. For comparison grayscale input and outputs are used. This strategy is particularly advantageous because it minimizes the complexity arising from the vast number of potential output possibilities in classification tasks. With RGB color representation, each pixel can be classified into one of 16,581,375 distinct color combinations (255 possibilities for each of the red, green, and blue channels).
+    % To see if the method (Classification / Regression) has a big impact on the performance of the model both methods are tested. For comparison grayscale input and outputs are used. This strategy is particularly advantageous because it minimizes the complexity arising from the vast number of potential output possibilities in classification tasks. With RGB color representation, each pixel can be classified into one of 16,581,375 distinct color combinations (255 possibilities for each of the red, green, and blue channels).
 
-    Utilizing grayscale input and outputs, simplifies the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
+    % Utilizing grayscale input and outputs, simplifies the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
 
-    %TODO:
-    TODO: Add more information about the Classification and Regression Results
+    % %TODO:
+    % TODO: Add more information about the Classification and Regression Results
         
 
     \subsubsection{Training the Model}
