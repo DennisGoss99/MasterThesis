@@ -7,7 +7,7 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{imgs/SITModel.png}
-        \caption{Spiral Image Transformer Model}
+        \caption{Spiral Image Transformer model structure}
         \label{fig:SpiralImageTransformer}
     \end{figure}
 
@@ -36,7 +36,7 @@ def get_batch(data):
 
     return source, label
         \end{lstlisting}
-        \caption{Get data in a spiral form for the SIT model}
+        \caption{Python function to get data in a spiral form}
         \label{fig:spiral_indexing_code}
     \end{figure}
 
@@ -86,14 +86,14 @@ def create_spiral(n): # n = width and height
     \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{../code/dataAnalysis/plots/exampleImgs/spiralShowcase1.png}
-    \caption{Image representation}
+    \caption{7x7 image with a spiral index overlay}
     \label{fig:spiral_indexing_1}        
     \end{figure}
 
     \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{../code/dataAnalysis/plots/exampleImgs/spiralShowcase0.png}
-    \caption{7x7 Image flattened into a spiral form} 
+    \caption{7x7 Image flattened into the spiral form} 
     \label{fig:spiral_indexing_0}        
     \end{figure}
 
@@ -108,12 +108,12 @@ Similar to the CIT model, the addition of positional embeddings is handled in th
 
 \subsubsection{Training the Model}
 
-This model is trained using the Adam optimizer with a learning rate of \(3 \times 10^{-5}\). The loss function used is the Mean Squared Error (MSE) loss. Both training sizes of the model are trained for 4 epochs with a batch size of 8 for the small model and 4 for the big model. The model is trained on the x512 dataset. For more details see \autoref{sec:trained_models_hyperparameters}.
+This model is trained using the Adam optimizer with a learning rate of \(3 \times 10^{-5}\). The loss function used is the Mean Squared Error (MSE) loss. Both training sizes of the model are trained for 4 epochs with a batch size of 8 for the small model and 4 for the big model. The model is trained on the x512 dataset. All the relevant trained SIT models [model 5-6] with their corresponding parameters can be found in detail in the appendix, see \autoref{sec:trained_models_hyperparameters}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{imgs/Training_Metrics_SIT 5.0.1.0_small.png}
-    \caption{SIT Model Training Metrics for the small model}
+    \caption{Loss plot of the SIT [model 5]}
     \label{fig:Training_Metrics_SITSmall}
 \end{figure}
 
@@ -132,14 +132,14 @@ In each of the tests, the end of the seed pixels is marked with a purple pixel i
             \begin{minipage}{0.48\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_5.0.1.0_small.png} 
-                \subcaption{Model[4] 5.0.1.0 small}
+                \subcaption{[model 5] 5.0.1.0 small}
                 \label{fig:test0_1_M4_SIT}
             \end{minipage}
             \hfill
             \begin{minipage}{0.48\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_5.0.1.0_big.png} 
-                \subcaption{Model[5] 5.0.1.0 large}
+                \subcaption{[model 6] 5.0.1.0 big}
                 \label{fig:test0_2_M5_SIT}
             \end{minipage}
             \caption{Color test with two different model sizes}
@@ -171,14 +171,14 @@ In each of the tests, the end of the seed pixels is marked with a purple pixel i
             \begin{minipage}{0.48\textwidth}
                 \centering
                 \includegraphics[width=0.8\textwidth]{imgs/ImageTest_5.0.1.0_small.png} 
-                \subcaption{Model[4] 5.0.1.0 small}
+                \subcaption{[model 5] 5.0.1.0 small}
                 \label{fig:test2_1_M4_SIT}
             \end{minipage}
             \hfill
             \begin{minipage}{0.48\textwidth}
                 \centering
                 \includegraphics[width=0.8\textwidth]{imgs/ImageTest_5.0.1.0_big.png} 
-                \subcaption{Model[5] 5.0.1.0 large}
+                \subcaption{[model 6] 5.0.1.0 big}
                 \label{fig:test2_2_M5_SIT}
             \end{minipage}
             \caption{Image continuation test with two different model sizes}
@@ -193,7 +193,7 @@ In each of the tests, the end of the seed pixels is marked with a purple pixel i
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.7\textwidth]{imgs/RainbowImageTest_5.0.1.0_big.png}
-            \caption{Rainbow spiral pattern test}
+            \caption{Rainbow spiral pattern test SIT [model 6]}
             \label{fig:test3_SIT}
         \end{figure}
         

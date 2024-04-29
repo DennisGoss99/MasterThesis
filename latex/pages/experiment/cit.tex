@@ -6,7 +6,7 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.8\textwidth]{imgs/CITModel.png}
-        \caption{Column Image Transformer Model}
+        \caption{Column Image Transformer model structure}
         \label{fig:ColumnImageTransformer}
     \end{figure}
 
@@ -75,7 +75,7 @@ def forward(self, source, targets=None):
     x = tok_emb + pos_emb 
     #[...]
 \end{lstlisting}
-\caption{Python code snippet for the Positional Embedding Layer}
+\caption{Python code snippet for the positional / pixel embedding layers}
 \label{fig:posEmbend_CIT}
 \end{figure}
    
@@ -115,16 +115,16 @@ def forward(self, source, targets=None):
 
     \subsubsection{Training the Model}
 
-    The training process starts by selecting the hyperparameters and arguments for the model. To test the basic functionality of the model, the training process is kept simple, and they are trained on a single GPU. Most of the training is done via the Slurm cluster, which uses a batch script to configure the hardware and training parameters. All the parameters can be found in detail in the appendix \autoref{sec:trained_models_hyperparameters}.
+    The training process starts by selecting the hyperparameters and arguments for the model. To test the basic functionality of the model, the training process is kept simple, and they are trained on a single GPU. Most of the training is done via the Slurm cluster, which uses a batch script to configure the hardware and training parameters. All the relevant trained models [model 0-4] with their corresponding parameters can be found in detail in the appendix, see \autoref{sec:trained_models_hyperparameters}.
     
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.9\textwidth]{imgs/Training_Metrics_CIT 2.1.8.1_512.png}
-        \caption{Column Image Transformer Model}
+        \caption{Loss plot of the CIT [model 4]}
         \label{fig:Training_Metrics_CIT512}
     \end{figure}
 
-    The figure above displays the training metrics for the Column Image Transformer Model [3] CIT 2.1.8.1\_512, illustrating the loss over iterations during the training phase. The blue line signifies the training validation loss, and the orange line represents the validation loss throughout the training iterations. The graph shows a consistent decline in both metrics, indicating that the model is learning and improving its predictive accuracy over time. The 'Cutoff Point,' indicated by the dashed red line, marks the iteration at which the model is used in the examples presented in this thesis since it has not shown further improvement beyond this point. An unusual behavior observed is that the validation loss is lower than the training validation loss, which is uncommon. This could be the case due to various factors, such as a high dropout rate and needs further investigation.
+    The figure above displays the training metrics for the Column Image Transformer [model 4] CIT 2.1.8.1\_512, illustrating the loss over iterations during the training phase. The blue line signifies the training validation loss, and the orange line represents the validation loss throughout the training iterations. The graph shows a consistent decline in both metrics, indicating that the model is learning and improving its predictive accuracy over time. The 'Cutoff Point,' indicated by the dashed red line, marks the iteration at which the model is used in the examples presented in this thesis since it has not shown further improvement beyond this point. An unusual behavior observed is that the validation loss is lower than the training validation loss, which is uncommon. This could be the case due to various factors, such as a high dropout rate and needs further investigation.
 
     \subsubsection{Experimental Results}
 
@@ -141,14 +141,14 @@ def forward(self, source, targets=None):
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.7.1_OldData.png} 
-                \subcaption{Model[0] 2.1.7.1}
+                \subcaption{[model 0] 2.1.7.1}
                 \label{fig:test1_M0_Cit}
             \end{minipage}
             \hfill
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_128.png} 
-                \subcaption{Model[1] 2.1.8.1 [128 Context]}
+                \subcaption{[model 1] 2.1.8.1 [128 Context]}
                 \label{fig:test1_M1_Cit}
             \end{minipage}
     
@@ -156,20 +156,20 @@ def forward(self, source, targets=None):
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_256.png} 
-                \subcaption{Model[2] 2.1.8.1 [256 Context]}
+                \subcaption{[model 2] 2.1.8.1 [256 Context]}
                 \label{fig:test1_M2_Cit}
             \end{minipage}
             \hfill
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{imgs/ColorTest_2.1.8.1_512.png} 
-                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \subcaption{[model 4] 2.1.8.1 [512 Context]}
                 \label{fig:test1_M3_Cit}
             \end{minipage}
             \caption{Color test with four different models}
         \end{figure}
     
-        As shown in the images above, Model [0] struggles to generate the correct colors due to the limited size of its old small dataset compared to Models [1-3]. Model [1] generally produces accurate colors but faces difficulties with some. Model [2] generates all colors correctly, but inconsistencies start appearing in column 8. The model may begin changing colors due to its training to recognize patterns such as flowers or carpets in the training data. Model [3] consistently generates the correct colors but begins to create patterns in some columns, potentially indicating that the model is overfitting.
+        As shown in the images above, model [0] struggles to generate the correct colors due to the limited size of its old small dataset compared to Models [1-3]. Model [1] generally produces accurate colors but faces difficulties with some. Model [2] generates all colors correctly, but inconsistencies start appearing in column 8. The model may begin changing colors due to its training to recognize patterns such as flowers or carpets in the training data. Model [4] consistently generates the correct colors but begins to create patterns in some columns, potentially indicating that the model is overfitting.
  
         \item \textbf{Zebra pattern test:} The second test assesses whether the model can generate a zebra pattern. The model is provided with both a vertical and a horizontal test image featuring black and white stripes, each stripe being 4 pixels wide. It then generates the next 32 pixels. 
 
@@ -179,20 +179,20 @@ def forward(self, source, targets=None):
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=0.5\textwidth]{imgs/ZebraTestV_2.1.7.1_OldData.png} 
-                \subcaption{Model[0] 2.1.7.1}
+                \subcaption{[model 0] 2.1.7.1}
                 \label{fig:test2_0_M0_Cit}
             \end{minipage}
             \hfill
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=0.5\textwidth]{imgs/ZebraTestV_2.1.8.1_512.png} 
-                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \subcaption{[model 4] 2.1.8.1 [512 Context]}
                 \label{fig:test2_0_M5_Cit}
             \end{minipage}
             \caption{Zebra test vertical with two different models}
         \end{figure}
 
-        As shown in the images above, the model with the newer dataset (Model[3]) generates the colors in the zebra pattern more accurately than the model with the older dataset (Model[0]). Models [1-3] perform similarly. The vertical test is particularly interesting to observe when the column model is altered to see pixels from both the left and the right sides of the current column, assessing whether it can still perfectly continue generating the pattern.
+        As shown in the images above, the model with the newer dataset model[4] generates the colors in the zebra pattern more accurately than the model with the older dataset model[0]. Models [0-2] perform similarly. The vertical test is particularly interesting to observe when the column model is altered to see pixels from both the left and the right sides of the current column, assessing whether it can still perfectly continue generating the pattern.
 
 
         \begin{figure}[H]
@@ -201,20 +201,20 @@ def forward(self, source, targets=None):
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=0.5\textwidth]{imgs/ZebraTestH_2.1.7.1_OldData.png} 
-                \subcaption{Model[1] 2.1.8.1}
+                \subcaption{[model 1] 2.1.8.1}
                 \label{fig:test2_1_M0_Cit}
             \end{minipage}
             \hfill
             \begin{minipage}{0.45\textwidth}
                 \centering
                 \includegraphics[width=0.5\textwidth]{imgs/ZebraTestH_2.1.8.1_512.png} 
-                \subcaption{Model[3] 2.1.8.1 [512 Context]}
+                \subcaption{[model 4] 2.1.8.1 [512 Context]}
                 \label{fig:test2_1_M5_Cit}
             \end{minipage}
             \caption{Zebra test horizontal with two different models}
         \end{figure}
 
-        Unfortunately, the model struggles to generate the zebra pattern horizontally. The model with the newer dataset (Model[3]) more accurately renders the colors in the zebra pattern than the model with the older dataset (Model[0]), but both models struggle to correctly continue the pattern. Model [3] can recognize that the next pixel in the pattern should be dark but quickly loses context. This could be due to the dataset being too small or the model size being insufficient to fully understand the pattern. The images suggest that Model [3] is better than Model [1] but still fails to generate the pattern correctly.
+        Unfortunately, the model struggles to generate the zebra pattern horizontally. The model with the newer dataset model [4] more accurately renders the colors in the zebra pattern than the model with the older dataset model [0], but both models struggle to correctly continue the pattern. Model [4] can recognize that the next pixel in the pattern should be dark but quickly loses context. This could be due to the dataset being too small or the model size being insufficient to fully understand the pattern. The images suggest that model [4] is better than model [1] but still fails to generate the pattern correctly.
        
     \end{itemize}
 
