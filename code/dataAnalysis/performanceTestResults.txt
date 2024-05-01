@@ -1,0 +1,40 @@
+CIT Model [1] 128 [32x32 Tokens]
+CUDA:	Time: 0.5111122131347656 sec; avg time per token: 0.0004991330206394195625 sec
+CPU:	Time: 0.494098424911499 sec; avg time per token: 0.00048251799307763575 sec
+
+CIT Model [3] 256 [32x32 Tokens]
+CUDA:	Time: 0.7251994609832764 sec; avg time per token: 0.0007082025986164808125 sec
+CPU:	Time: 2.850921392440796 sec; avg time per token: 0.0027841029223054646875 sec
+
+CIT Model [4] 512 [32x32 Tokens]
+CUDA:	Time: 0.8985037803649902 sec; avg time per token: 0.00087744509801268578125 sec
+CPU:	Time: 4.489036798477173 sec; avg time per token: 0.0043838249985128640625 sec
+
+SIT Model [5] Small [1024 Tokens]
+CUDA:	Time: 9.387928485870361 sec; avg time per token: 0.009167898911982775 sec
+CPU     Time: 30.709012508392334 sec; avg time per token: 0.02998927002772689 sec
+
+SIT Model [6] Big [1024 Tokens]
+CUDA:	Time: 15.7725670337677 sec; avg time per token: 0.01540289749391377 sec
+CPU:	Time: 114.3937451839447 sec; avg time per token: 0.111712641781196 sec
+
+
+CIT Model [4] 512 [512 Tokens Context]
+CUDA:	
+BATCH; BLOCK; COLOR 
+1 512 3
+cuda:   Time: 9.655986547470093 sec; avg time per token: 0.018859348725527525 sec
+2 512 3
+cuda:   Time: 9.727807760238647 sec; avg time per token: 0.009499812265858054 sec
+4 512 3
+cuda:   Time: 10.637474775314331 sec; avg time per token: 0.005194079480133951 sec
+8 512 3
+cuda:   Time: 14.442345380783081 sec; avg time per token: 0.0035259632277302444 sec
+16 512 3
+cuda:   Time: 23.1120023727417 sec; avg time per token: 0.0028212893521413207 sec
+32 512 3
+cuda:   Time: 42.083404302597046 sec; avg time per token: 0.002568567157140933 sec
+64 512 3
+cuda:   Time: 235.51378989219666 sec; avg time per token: 0.007187310482549947 sec
+
+
