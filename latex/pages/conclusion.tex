@@ -13,10 +13,37 @@
     
 
 \subsubsection{Performance}
-    % One the big question is if it is possible to generated assets for video game. Here we can split it into two parts. The first part is to generate assets beforehand in the development cylce and in the second part is is the model so efficient that it is possible to generate assets in real time on a local machine.
 
-    % \subsection{Execution locally and on the cloud}
+    A key question that arises is whether it is feasible to generate assets for video games using the developed models. This question can be divided into two distinct parts. The first considers the pre-generation of assets during the development cycle, while the second evaluates whether the models are efficient enough to generate assets in real time on a local machine.
 
+    The following table provides a detailed overview of the performance metrics for the CIT and SIT models, tested both on GPU (CUDA) and the CPU. To be noted is that the Tokens column refers to the number of tokens used for the generation of the image. The CIT model uses a Batch size of 32 and a Context length of 32 tokens, while the SIT model uses a Batch size of 1 and a context length of 1024 tokens. Both models generate a resulting image of 32x32 pixels. Both models were tested on a local workstation with an NVIDIA GeForce RTX 3090 GPU and an AMD Ryzen 9 7900X CPU
+
+    \begin{table}[H]
+        \centering
+        \small
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Platform} & \textbf{Total Time (sec)} & \textbf{Avg Time per Token (sec)} & \textbf{Tokens} \\ \hline
+        \multirow{2}{*}{CIT [1] 128} & GPU & 0.511 & 0.000499 & \multirow{2}{*}{32x32} \\ \cline{2-4}
+                                           & CPU  & 0.494 & 0.000483 &  \\ \hline
+        \multirow{2}{*}{CIT [3] 256} & GPU & 0.725 & 0.000708 & \multirow{2}{*}{32x32} \\ \cline{2-4}
+                                           & CPU  & 2.851 & 0.002784 &  \\ \hline
+        \multirow{2}{*}{CIT [4] 512} & GPU & 0.899 & 0.000877 & \multirow{2}{*}{32x32} \\ \cline{2-4}
+                                           & CPU  & 4.489 & 0.004384 &  \\ \hline
+        \multirow{2}{*}{SIT [5] Small} & GPU & 9.388 & 0.009168 & \multirow{2}{*}{1x1024} \\ \cline{2-4}
+                                             & CPU  & 30.709 & 0.029989 &  \\ \hline
+        \multirow{2}{*}{SIT [6] Big} & GPU & 15.773 & 0.015403 & \multirow{2}{*}{1x1024} \\ \cline{2-4}
+                                           & CPU  & 114.394 & 0.111713 &  \\ \hline
+        \end{tabular}
+        \caption{Performance metrics for CIT and SIT models [local workstation]}
+        \label{tab:performance_metrics}
+    \end{table}
+        
+    The results show that the SIT model is significantly slower than the CIT model, especially when running on the CPU. This is due tu the fact that the processing in the Batch dimentions is way more efficient than in the Token dimension. TODO ADD INFO APPENDIX PLOT
+
+    It can be said that both methods would be viable in a development environment, where the developer would generate assets in the prototyping or development cycle. The figure \autoref{fig:performanceTest} shows that the expected optimal runtime per pixels is 2.51ms for the sit model this would result in an runntime of ruffly 11 min for a 512x512 image on a 3090 RTX CARD.
+    
+    This could be a problem when thinking about to run these models on a avg gaming capable machine. Due to the vast amount of data and size of the models a big video memory is need. Only 27.17\% have more then 8 GB of VRAM and 49.37\% have at least a NVIDIA GeForce RTX 2060 more newer information form Steam Hard ware study March 2024 \autocite{Valve2024}. This could be a problem for the SIT model, which needs a lot of memory to run. The CIT   model could be run on most of the machines, but the quality of the generated images would be low and with a mentioned addition to the model, the requirements xould even be higher. So a cloud based solution could be a better approach for the case if someone wants to create a game with the capablity to generate asserts on the fly.
 
 
 \subsection{Further research}

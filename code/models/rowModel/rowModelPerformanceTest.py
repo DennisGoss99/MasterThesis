@@ -23,19 +23,19 @@ import time
 torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
-BATCH_SIZE=64
-IMAGE_SIZE=257
-BLOCK_SIZE=256
+BATCH_SIZE=32
+IMAGE_SIZE=512
+BLOCK_SIZE=511
 CHANNELS_IMG=3
-N_EMBD=512
-N_HEAD=8
-N_LAYER=8
+N_EMBD=640
+N_HEAD=9
+N_LAYER=9
 
 DROPOUT = 0.2
 
 VERSION = "2.1.8.1_newData_512"
 
-PATH = r"C:\Users\Dennis\Desktop\columnModelBig_2.1.8.1_256\model2.1.8.1_newData_256_EP4-20240417.pth"
+PATH = r"C:\Users\Dennis\Desktop\columnModelBig_2.1.8.1_512\model2.1.8.1_newData_511_EP6-20240424.pth"
 
 #device = 'cuda' if torch.cuda.is_available() else 'cpu'
 device = 'cuda'
@@ -218,10 +218,12 @@ m.load_state_dict(checkpoint)
 # Modell auf die GPU senden, falls verfügbar
 m.to(device)
 
-with torch.no_grad():
-    gen_length = 32
+
+@torch.no_grad()
+def run_test(gen_length, W):
+    #gen_length = 32
     C = 3
-    W = 32
+    #W = 32
 
     idx = torch.zeros((W, gen_length + 1, C)).to(device)
 
@@ -243,7 +245,13 @@ with torch.no_grad():
 
 
     stop_time = time.time()
-    print("device: ", device)
     print(f"{W} {gen_length} {C}")
     print(f"{device}:   Time: {stop_time - start_time} sec; avg time per token: {(stop_time - start_time) / gen_length / W} sec")
+
+
+run_test(512, 24)
+run_test(512, 40)
+run_test(512, 48)
+run_test(512, 56)
+run_test(512, 128)
 

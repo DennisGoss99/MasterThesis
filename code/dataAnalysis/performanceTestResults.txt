@@ -32,9 +32,18 @@ cuda:   Time: 10.637474775314331 sec; avg time per token: 0.005194079480133951 s
 cuda:   Time: 14.442345380783081 sec; avg time per token: 0.0035259632277302444 sec
 16 512 3
 cuda:   Time: 23.1120023727417 sec; avg time per token: 0.0028212893521413207 sec
+24 512 3
+cuda:   Time: 32.44662070274353 sec; avg time per token: 0.0026405127525019148 sec
 32 512 3
 cuda:   Time: 42.083404302597046 sec; avg time per token: 0.002568567157140933 sec
+40 512 3
+cuda:   Time: 51.39734625816345 sec; avg time per token: 0.0025096360477618873 sec
+48 512 3
+cuda:   Time: 103.16118860244751 sec; avg time per token: 0.0041976395101907355 sec
+56 512 3
+cuda:   Time: 169.4156813621521 sec; avg time per token: 0.005908750047508095 sec
 64 512 3
 cuda:   Time: 235.51378989219666 sec; avg time per token: 0.007187310482549947 sec
+
 
 
