@@ -6,7 +6,7 @@
 
     To build the models, a set of Python libraries is utilized, mainly PyTorch, NumPy, TensorBoard, and Einops. PyTorch serves as the core tool for constructing and training the models.
     
-    The transformer model's code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it has been modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
+    The transformer models code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it has been modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
     
     \subsubsection{Data Handling}
     \label{sec:DataHandling}
@@ -21,7 +21,7 @@
 \begin{lstlisting}[language=Python]
     def getDataSet(path, dataset_name, size_x, size_y, repeatData=1, random_vertical_flip=False, random_horizontal_flip=False, crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0, jitter_contrast=0, jitter_saturation=0, jitter_hue=0):
 \end{lstlisting}
-\caption{Python function declaration: getDataSet}
+\caption{Python function declaration: getdataset}
 \label{fig:getDataSet}
 \end{figure}
 
@@ -35,5 +35,16 @@
     %Todo : write about the logging the loss each 1000 steps val los train loss and the images
 
 
+    \subsubsection{Multi GPU Training}
+    
+    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the models code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
+    \subsubsection{Generation of Assets}
 
+    Similar to conventional text-based transformer models, this model generates assets pixel by pixel. Thus, the model is provided with some pixels, denoted as \(\mathbf{x} = (x_1, x_2, \ldots, x_n)\). It then predicts the next pixel, \(x_{n+1}\), based on the learned training data. During generation, the last predicted pixel is appended to the existing sequence, and the updated sequence is used for subsequent predictions.
+
+    \[
+        \mathbf{x}' = \mathbf{x} \cup \{x_{n+1}\}
+    \]
+    
+    This process is repeated until the desired image size is achieved. Consequently, the model can generate assets of the specified size. This approach is utilized for both the CIT and the SIT models.

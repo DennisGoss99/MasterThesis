@@ -32,16 +32,16 @@ torch.manual_seed(1337)
 
 LEARNING_RATE = 3e-5
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 
-BLOCK_SIZE = 128
-IMAGE_SIZE = 129
+BLOCK_SIZE = 256
+IMAGE_SIZE = 257
 
 CHANNELS_IMG = 3
 
-N_EMBD = 128
-N_HEAD = 6
-N_LAYER = 6
+N_EMBD = 512
+N_HEAD = 8
+N_LAYER = 8
 DROPOUT = 0.2
 
 VERSION = "2.1.8.0_newData_256"
@@ -328,6 +328,8 @@ def main():
 
 if __name__ == '__main__':
     try:
-        main()   
+        # main()   
+        m = ColumnTransformer()
+        print(count_parameters(m))
     except Exception as e:
         print(f"An error occurred: {e}")

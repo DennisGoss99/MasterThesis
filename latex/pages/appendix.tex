@@ -1,12 +1,10 @@
 
-% syntax: none
-
 \subsection{Dataset Plots in the Lab Color Space}\label{sec:app_labPlots}
 
 \begin{figure}[H]
     \centering
     \foreach \i in {-1,...,18}{
-      \begin{subfigure}[t]{0.23\textwidth}
+      \begin{subfigure}[t]{0.21\textwidth}
         \centering       
         \ifnum \i=-1
             \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/DataCombined_lab.png}
@@ -26,7 +24,7 @@
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.23\textwidth}
+    \begin{subfigure}[t]{0.21\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
@@ -38,7 +36,7 @@
 \begin{figure}[H]
     \centering
     \foreach \i in {19,...,33}{
-      \begin{subfigure}[t]{0.23\textwidth}
+      \begin{subfigure}[t]{0.21\textwidth}
         \centering       
         \ifnum \i=-1
             \includegraphics[width=\textwidth]{../code/dataAnalysis/plots/lab/DataCombined_lab.png}
@@ -58,7 +56,7 @@
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.23\textwidth}
+    \begin{subfigure}[t]{0.21\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
@@ -76,7 +74,7 @@
 \begin{figure}[H]
     \centering
     \foreach \i in {-1,...,18}{
-      \begin{subfigure}[t]{0.23\textwidth}
+      \begin{subfigure}[t]{0.21\textwidth}
         \centering
 
         \ifnum \i=-1
@@ -96,7 +94,7 @@
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.23\textwidth}
+    \begin{subfigure}[t]{0.21\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
@@ -109,7 +107,7 @@
 \begin{figure}[H]
     \centering
     \foreach \i in {19,...,33}{
-      \begin{subfigure}[t]{0.23\textwidth}
+      \begin{subfigure}[t]{0.21\textwidth}
         \centering
 
         \ifnum \i=-1
@@ -129,7 +127,7 @@
           \hfill
       \fi
     }
-    \begin{subfigure}[t]{0.23\textwidth}
+    \begin{subfigure}[t]{0.21\textwidth}
         \centering
         % No image to include, so this is left empty
         \caption*{} % Empty caption
@@ -139,6 +137,41 @@
 
 \end{figure}
 
+\newpage
+\begin{landscape}
+\subsection{Trained Models with hyperparameters}
+\label{sec:trained_models_hyperparameters}
+
+
+\begin{table}[H]
+    \centering
+    \begin{threeparttable}
+    \caption{Model Configuration Overview}
+    \scriptsize
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+    \toprule
+    MODEL & Nr. & VER. & BATCH\_SIZE & BLOCK\_SIZE & N\_EMBD & N\_HEAD & N\_LAYER & PARAMETER\tnote{*} & GPUS & DATASET & VAL\_LOSS\tnote{**}  \\
+    \midrule
+    \multirow{5}{*}{\rotatebox{90}{CIT}}
+    & 0 & 2.1.7.0 & 128 & 128 & 128 & 6 & 6 & 1.22 m & 1 & old Dataset & 0.0082  \\
+    & 1 & 2.1.8.0 & 64 & 64 & 128 & 6 & 6 & 1.21 m & 1 & x512 Dataset & 0.0035 \\
+    & 2 & 2.1.8.0 Classify & 64 & 64 & 128 & 6 & 6 & 1.25 m & 1 & x512 Dataset & 1.841 \\
+    & 3 & 2.1.8.0 & 64 & 256 & 512 & 8 & 8 & 25.66 m & 4 & x512 Dataset & 0.0025 \\
+    & 4 & 2.1.8.0 & 32 & 511 & 640 & 9 & 9 & 45.09 m & 4 & x512 Dataset & 0.0024 \\
+    \midrule
+    \multirow{2}{*}{\rotatebox{90}{SIT}}
+    & 5 & 5.0.1.0 & 8 & 4,095 & 128 & 6 & 6 & 1.73 m & 1 & x512 Dataset & 0.0074 \\
+    & 6 & 5.0.1.0 & 4 & 4,095 & 512 & 8 & 8 & 27.62 m & 1 & x512 Dataset & 0.0027 \\
+    \bottomrule
+    \end{tabular}
+    \begin{tablenotes}
+    \item[*] Figures in millions
+    \item[**] Average of the last 5 validation loss values
+    \end{tablenotes}
+    \end{threeparttable}
+\end{table}
+
+\end{landscape}
 
 \newpage
 
@@ -155,7 +188,7 @@
     RAM & 64 GB (DDR5-6000) \\ \hline
     SSD & 2TB Samsung 990 PRO M.2 PCIe 4.0 \\ \hline
     \end{tabularx}
-    \caption{Local Workstation Setup}
+    \caption{Local workstation setup}
     \label{table:workstation_setup}
 \end{table}
     
@@ -169,7 +202,7 @@
     RAM & 1 TB RAM (DDR4-3200) \\ \hline
     SSD & 7.68 TB NVMe local SSD \\ \hline
     \end{tabularx}
-    \caption{Single compute node}
+    \caption{Single slurm compute node}
     \label{table:server_setup}
 \end{table}
 

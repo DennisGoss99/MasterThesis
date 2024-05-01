@@ -19,8 +19,10 @@ footskip=1cm,headheight=14.599pt]{geometry}
 \usepackage{graphicx} 
 \usepackage{epstopdf}
 
+\usepackage{threeparttable} % For adding notes below the table
 \usepackage{tabularx}
 \usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{multirow}
 
 \usepackage{subcaption}
@@ -170,22 +172,20 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
     \section{Conclusion}\label{conclusion}  
     \input{pages/conclusion} 
     
-    
 
-    \newpage
-    \setcounter{section}{0} 
+    \clearpage
+    \setcounter{section}{0}
     \renewcommand*\thesection{\Alph{section}}
 
-    \pagenumbering{roman}
+    \pagenumbering{roman} 
     \section{Appendix}\label{appendix}
     \input{pages/appendix}
 
-
-
-    \newpage
-        
-    \pagestyle{empty}
-    \pagenumbering{gobble}
+    \clearpage
+    \pagestyle{empty}  
+    \pagenumbering{gobble}  
+    
+    
     \section{Eidesstattliche Erklärung}
     
     Ich versichere, die von mir vorgelegte Arbeit selbständig verfasst zu haben.
