@@ -371,9 +371,6 @@ if __name__ == '__main__':
             if not os.path.exists(outputdir +'/tempModel/'):
                 os.makedirs(outputdir + '/tempModel/')
 
-            
-
-
             dataset = getDataSet(args.path, args.dataset, IMAGE_SIZE, IMAGE_SIZE, repeatData=1,
                 random_vertical_flip=False, random_horizontal_flip=False,
                 crop_type='random', grayscale=False, color_jitter=False, jitter_brightness=0,
