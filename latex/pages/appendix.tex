@@ -212,14 +212,19 @@
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{imgs/performanceTest.png}
-    \caption{Average Time Per Token vs. Batch Size for CIT Model [4] 512 Token}
+    \includegraphics[width=0.9\textwidth]{imgs/performanceTest.png}
+    \caption{Average time per token vs. batch size for CIT model [4] 512 token}
     \label{fig:performanceTest}
 \end{figure}
 
 As illustrated in Figure \ref{fig:performanceTest}, the batch size is plotted against the average time per generated token. The test was conducted on a local workstation equipped with an NVIDIA RTX 3090 GPU. Notably, the average time per token decreases logarithmically as the batch size increases. However, upon reaching a batch size of 40, the GPUs 24GB of memory becomes fully utilized, resulting in a noticeable linear increase in processing time. This slowdown occurs because PyTorch begins to utilize an additional 32GB of shared system memory to manage the increased data load.
 
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imgs/performanceTest2.png}
+    \caption{Total generation time vs. context size for CIT model [4] 512 token}
+    \label{fig:performanceTest2}
+\end{figure}
 
 
 \newpage

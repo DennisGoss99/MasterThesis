@@ -14,9 +14,9 @@
 
 \subsubsection{Performance}
 
-    A key question that arises is whether it is feasible to generate assets for video games using the developed models. This question can be divided into two distinct parts. The first considers the pre-generation of assets during the development cycle, while the second evaluates whether the models are efficient enough to generate assets in real time on a local machine.
+    A key question that arises is whether it is feasible to generate assets for video games using the developed models. This question can be divided into two distinct parts. The first considers the pre-generation of assets during the development cycle, while the second evaluates whether the models are efficient enough to generate assets in real-time on a local machine.
 
-    The following table provides a detailed overview of the performance metrics for the CIT and SIT models, tested both on GPU (CUDA) and the CPU. To be noted is that the Tokens column refers to the number of tokens used for the generation of the image. The CIT model uses a Batch size of 32 and a Context length of 32 tokens, while the SIT model uses a Batch size of 1 and a context length of 1024 tokens. Both models generate a resulting image of 32x32 pixels. Both models were tested on a local workstation with an NVIDIA GeForce RTX 3090 GPU and an AMD Ryzen 9 7900X CPU
+    The following table provides a detailed overview of the performance metrics for the CIT and SIT models, tested on both GPU and CPU. It is noteworthy that the Tokens column refers to the number of tokens used for generating the image. The CIT model utilizes a batch size of 32 and a context length of 32 tokens, while the SIT model uses a batch size of 1 and a context length of 1024 tokens. Both models generate a resulting image of 32x32 pixels. Each model was tested on a local workstation equipped with an NVIDIA GeForce RTX 3090 GPU and an AMD Ryzen 9 7900X CPU.
 
     \begin{table}[H]
         \centering
@@ -39,12 +39,12 @@
         \label{tab:performance_metrics}
     \end{table}
         
-    The results show that the SIT model is significantly slower than the CIT model, especially when running on the CPU. This is due tu the fact that the processing in the Batch dimentions is way more efficient than in the Token dimension. TODO ADD INFO APPENDIX PLOT
+    The results indicate that the SIT model is significantly slower than the CIT model, especially when running on the CPU. This is because generating a bigger image in the batch dimensions is far more efficient than in the token dimension. For a detailed visualization of the performance scaling across these dimensions, refer to \autoref{fig:performanceTest} for batch dimension scaling and \autoref{fig:performanceTest2} for context dimension scaling on the CIT [model 4].
 
-    It can be said that both methods would be viable in a development environment, where the developer would generate assets in the prototyping or development cycle. The figure \autoref{fig:performanceTest} shows that the expected optimal runtime per pixels is 2.51ms for the sit model this would result in an runntime of ruffly 11 min for a 512x512 image on a 3090 RTX CARD.
+    It can be observed that both methods could be somewhat viable in a development environment where developers generate assets during the prototyping or development cycle. As shown in Figure \autoref{fig:performanceTest}, the expected optimal runtime per pixel for the CIT model is 2.51 milliseconds. This would result in an approximate runtime of roughly 11 minutes for a 512x512 image on an RTX 3090 GPU.
     
-    This could be a problem when thinking about to run these models on a avg gaming capable machine. Due to the vast amount of data and size of the models a big video memory is need. Only 27.17\% have more then 8 GB of VRAM and 49.37\% have at least a NVIDIA GeForce RTX 2060 more newer information form Steam Hard ware study March 2024 \autocite{Valve2024}. This could be a problem for the SIT model, which needs a lot of memory to run. The CIT   model could be run on most of the machines, but the quality of the generated images would be low and with a mentioned addition to the model, the requirements xould even be higher. So a cloud based solution could be a better approach for the case if someone wants to create a game with the capablity to generate asserts on the fly.
-
+    However, this could pose a challenge when considering running these models on an average gaming-capable machine. Due to the large amount of data and the size of the models, substantial video memory is required. Only 27.17\% of users have more than 8 GB of VRAM, and 49.37\% have at least an NVIDIA GeForce RTX 2060, according to the Steam Hardware Survey of March 2024 \autocite{Valve2024}. This could be problematic for the SIT model, which demands considerable memory to operate effectively. The CIT model could run on most machines, but the size/context length of the generated images would be compromised, and any enhancements to the model could further increase system requirements. Thus, a cloud-based solution might be a better approach for this case, when the created games should be capable of generating assets on the fly.
+    
 
 \subsection{Further research}
 
