@@ -97,7 +97,7 @@ def create_spiral(n): # n = width and height
     \label{fig:spiral_indexing_0}        
     \end{figure}
 
-    As shown in \autoref{fig:spiral_indexing_1}, the pixels of the image are labeled with their respective indices 0, \dots, 43. The image is then unrolled into a single dimension, as shown in \autoref{fig:spiral_indexing_0}. The centering pixel is the first element of the spiral, and the spiral continues counterclockwise from there. In the model script, the dimensions for width and height typically exceed a width of 7, yet the underlying process remains unchanged.
+    As shown in \autoref{fig:spiral_indexing_1}, the pixels of the image are labeled with their respective indices 0, \dots, 48. The image is then unrolled into a single dimension, as shown in \autoref{fig:spiral_indexing_0}. The centering pixel is the first element of the spiral, and the spiral continues counterclockwise from there. In the model script, the dimensions for width and height typically exceed a width of 7, yet the underlying process remains unchanged.
 
 
 
@@ -147,7 +147,7 @@ In each of the tests, the end of the seed pixels is marked with a purple pixel i
         
         As depicted in the images above, the smaller model cannot even come close to the desired color output. The larger model performs somewhat better but still struggles to produce the correct color output, especially with the lighter gray shades.
         
-        \item \textbf{Image Continuation Test:} The image continuation test is designed to evaluate the models ability to expand an image. The model is provided with a test image measuring 25 pixels \autoref{fig:test2_init_SIT} and is tasked with generating around it to a width of 44 pixels.
+        \item \textbf{Image Continuation Test:} The image continuation test is designed to evaluate the model's ability to expand an image. The model is provided with a test image measuring 25 pixels, see \autoref{fig:test2_init_SIT} and is tasked with generating around it to a width of 44 pixels.
 
         \begin{figure}[H]
             \centering
@@ -197,16 +197,16 @@ In each of the tests, the end of the seed pixels is marked with a purple pixel i
             \label{fig:test3_SIT}
         \end{figure}
         
-        As demonstrated in \autoref{fig:test3_SIT}, the model tends to favor the generation of blue or red colors while avoiding yellow, purple, and especially green colors. However, it is noticeable in Image No. 4 that the model generates red accents, although this color is on the opposite side of the starting point. The issues could be due to a lack of training data or the models size, which needs further investigation.
+        As demonstrated in \autoref{fig:test3_SIT}, the model tends to favor the generation of blue or red colors while avoiding yellow, purple, and especially green colors. However, it is noticeable in Image No. 4 that the model generates red accents, although this color is on the opposite side of the starting point. The issues could be due to a lack of training data or the model's size, which needs further investigation.
         
 
     \end{itemize}
 
     \subsubsection{Challenges and Limitations}
 
-    As revealed in the experimental section, the Spiral Image Transformer (SIT) model faces difficulties in accurately generating the intended color outputs. This challenge could be anticipated, given that the SIT models task is inherently more complex than that of the Column Image Transformer (CIT) model. A pattern that progresses one dimensional in a single column is far simpler to learn than one that spirals in two dimensions. The smaller SIT model has an equivalent number of parameters to the smallest CIT model and was trained on an identical dataset, yet its performance is noticeably inferior. Similarly, the larger SIT model holds a parameter count on par with the mid-sized CIT model but falls short in the color tests.
+    As revealed in the experimental section, the Spiral Image Transformer (SIT) model faces difficulties in accurately generating the intended color outputs. This challenge could be anticipated, given that the SIT model's task is inherently more complex than that of the Column Image Transformer (CIT) model. A pattern that progresses one dimensional in a single column is far simpler to learn than one that spirals in two dimensions. The smaller SIT model has an equivalent number of parameters to the smallest CIT model and was trained on an identical dataset, yet its performance is noticeably inferior. Similarly, the larger SIT model holds a parameter count on par with the mid-sized CIT model but falls short in the color tests.
 
-    The limitations experienced by the SIT model could be partially attributed to the insufficiently diverse training dataset. Expanding the dataset, introducing more variance in the training examples, and scaling up the models complexity could potentially fix its current deficiencies. Moreover, equipping the model with additional contextual data, such as the precise location of a random crop, might improve its capacity for understanding and interpreting the broader context of an image.
+    The limitations experienced by the SIT model could be partially attributed to the insufficiently diverse training dataset. Expanding the dataset, introducing more variance in the training examples, and scaling up the model's complexity could potentially fix its current deficiencies. Moreover, equipping the model with additional contextual data, such as the precise location of a random crop, might improve its capacity for understanding and interpreting the broader context of an image.
 
     Incorporating a text prompt feature presents could result in a big improvement. By translating descriptive language into visual cues, a text prompt could guide the SIT model toward generating more accurate outputs, potentially reducing or even eliminating the need for seed pixels in some cases.
 

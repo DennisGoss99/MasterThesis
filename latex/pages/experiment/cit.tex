@@ -40,12 +40,12 @@ def get_batch(data):
 
     Through testing and experimentation, it seems that the optimal configuration for the pixel embedding layer involves a sequence of dimensionality increases. The most effective pathway identified begins by scaling the dimensionality of the input from the original image channels \(C\) to one-fifth of \(N_{\text{EMBD}}\) (\(\frac{1}{5}N_{\text{EMBD}}\)), then increasing it to one-half of \(N_{\text{EMBD}}\) (\(\frac{1}{2}N_{\text{EMBD}}\)) until reaching \(N_{\text{EMBD}}\). The pixel embedding layer is followed by a dropout layer with a dropout rate of 0.2. See \autoref{fig:posEmbend_CIT}.
 
-    It is crucial to highlight the importance of not using a layer normalization (layernorm) layer in the initial few layers of the model. Incorporating a layernorm layer too early results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of red, green, and blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the models ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
+    It is crucial to highlight the importance of not using a layer normalization (layernorm) layer in the initial few layers of the model. Incorporating a layernorm layer too early results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of red, green, and blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the model's ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
 
     \subsubsection{Positional Embedding}
     \label{sec:CIT_PositionalEmbedding}
 
-    The positional embedding layer in this model utilizes a learnable embedding matrix of size \text{BLOCK\_SIZE} times \(N_{\text{EMBD}}\), where \text{BLOCK\_SIZE} represents the context length, or the height of an image. This layer operates by assigning each position within this vertical context a unique embedding vector, thereby mapping the original pixel positions to a high-dimensional space characterized by \(N_{\text{EMBD}}\) dimensions. The integration of these positional embeddings is achieved through their direct addition to the output of the pixel embeddings, effectively enhancing the models ability to maintain positional awareness across the image height.
+    The positional embedding layer in this model utilizes a learnable embedding matrix of size \text{BLOCK\_SIZE} times \(N_{\text{EMBD}}\), where \text{BLOCK\_SIZE} represents the context length, or the height of an image. This layer operates by assigning each position within this vertical context a unique embedding vector, thereby mapping the original pixel positions to a high-dimensional space characterized by \(N_{\text{EMBD}}\) dimensions. The integration of these positional embeddings is achieved through their direct addition to the output of the pixel embeddings, effectively enhancing the model's ability to maintain positional awareness across the image height.
 
 
 \begin{figure}[H]
@@ -82,7 +82,7 @@ def forward(self, source, targets=None):
     \subsubsection{Transformer Layer}
     \label{sec:transformer_CIT}
 
-    The transformer layer forms the core of the models architecture and is crucial for processing the data. It utilizes self-attention mechanisms \autocite{vaswani2023attention} to weigh the importance of different pixels relative to each other, allowing the model to focus on relevant parts of the input when predicting the next pixel in a column. 
+    The transformer layer forms the core of the model's architecture and is crucial for processing the data. It utilizes self-attention mechanisms \autocite{vaswani2023attention} to weigh the importance of different pixels relative to each other, allowing the model to focus on relevant parts of the input when predicting the next pixel in a column. 
 
     In this model, each transformer layer receives the input from the previous layer. The layer then processes this input using a multi-head attention mechanism, which allows the model to capture various aspects of the input at different positions simultaneously. This is followed by a series of normalization and feed-forward layers. All are combined into a block that is repeated multiple times. See \autoref{sec:transformer_layer_Python} for the code snippet.
 
@@ -128,12 +128,12 @@ def forward(self, source, targets=None):
 
     \subsubsection{Experimental Results}
 
-    Multiple experiments are conducted to evaluate the performance of the CIT model. These experiments are designed to test the models ability to generate images, the quality of the generated images, and the models performance across different scenarios. The results are analyzed to identify the strengths and weaknesses of the model.
+    Multiple experiments are conducted to evaluate the performance of the CIT model. These experiments are designed to test the model's ability to generate images, the quality of the generated images, and the model's performance across different scenarios. The results are analyzed to identify the strengths and weaknesses of the model.
     
     In each test, the end of the seed pixels are marked with a purple line on the left side of the image.
     
     \begin{itemize}
-        \item \textbf{Color test:} To assess the models capability to generate specific colors, it is challenged with 11 different images with a width of 32 and a height of 128 pixels. Each test image is composed of a single color filling 128 positions in the models context. The model then generates the next 32 pixels for each image.
+        \item \textbf{Color test:} To assess the model's capability to generate specific colors, it is challenged with 11 different images with a width of 32 and a height of 128 pixels. Each test image is composed of a single color filling 128 positions in the model's context. The model then generates the next 32 pixels for each image.
     
         \begin{figure}[H]
             \centering
