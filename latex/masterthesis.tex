@@ -185,13 +185,19 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
     \pagenumbering{roman} 
     \section{Appendix}\label{appendix}
     \input{pages/appendix}
+   
+    \newpage
+    \printbibliography[heading=bibintoc]
+
 
     \clearpage
     \pagestyle{empty}  
     \pagenumbering{gobble}  
     
     
-    \section{Eidesstattliche Erklärung}
+    \section*{Eidesstattliche Erklärung}
+    \addcontentsline{toc}{section}{Eidesstattliche Erklärung}
+    
     
     Ich versichere, die von mir vorgelegte Arbeit selbständig verfasst zu haben.
     Alle Stellen, die wörtlich oder sinngemäß aus veröffentlichten oder nicht veröffentlichten Arbeiten anderer entnommen sind,
@@ -203,10 +209,6 @@ plainpages=false,hypertexnames=false,citecolor=black]{hyperref}
     & \\ \hline
     \small (Ort, Datum, Unterschrift) & \normalsize \\
     \end{tabular}
-    
-    
-    \newpage
-    \printbibliography
 
     \thispagestyle{empty}
     \newpage
