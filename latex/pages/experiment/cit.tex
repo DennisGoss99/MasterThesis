@@ -10,11 +10,11 @@
         \label{fig:ColumnImageTransformer}
     \end{figure}
 
-    The image above shows the steps carried out by the CIT model. The input data is reshaped into a columnar format, which is then embedded into a higher-dimensional space. The positional embedding layer adds positional context to the input data. The transformer layer processes the data, and the output is then transformed back into a columnar format. After going through a final layer normalization and another MLP that converts back from the embedded layer to 3 colors, the model is trained using a Mean Squared Error (MSE) loss function.
+    The image above shows the steps carried out by the CIT model. The input data is reshaped into a columnar format, which is then embedded into a higher-dimensional space. The positional embedding layer adds positional context to the input data. The transformer layer processes the data, and the output is then fed through a final layer normalization and another Image Reconstruction Layer that converts back from the embedded layer to 3 colors, the model is trained using a Mean Squared Error (MSE) loss function.
 
     \subsubsection{Get Data as Columns}
 
-    The data is loaded into a DataLoader object as described in \autoref{sec:DataHandling} and iterated over to extract it as a 4-dimensional tensor (Batch, Color Channels, Height, Width). This data is reshaped into a columnar format, resulting in two tensors: the \(source\) and \(targets\), both with the shape (Batch, Height, Color Channels). The target tensor is shifted one pixel downwards to the prediction of subsequent pixels by the model. This reshaping and shifting method is commonly employed in transformer-style learning because it enables the model to process data more efficiently in terms of computational speed and resource utilization. The source tensor is then fed into the model, and its output is compared against the targets using the Mean Squared Error (MSE) loss function.
+    The data is loaded into a DataLoader object as described in \autoref{sec:DataHandling} and iterated over to extract it as a 4-dimensional tensor (Batch, Color Channels, Height, Width). This data is reshaped into a columnar format, resulting in two tensors: the \(source\) and \(targets\), both with the shape (Batch, Height, Color Channels). The target tensor is shifted one pixel downwards to the prediction of subsequent pixels by the model. This reshaping and shifting method is commonly employed in transformer-style learning because it enables the model to process data more efficiently in terms of computational speed and resource utilization. The source tensor is then fed through the model and its final output is compared against the targets using the Mean Squared Error (MSE) loss function.
 
 \begin{figure}[H]
 \centering
@@ -36,16 +36,16 @@ def get_batch(data):
 
     \subsubsection{Pixel Embedding}
 
-    The \(source\) data is embedded into a higher-dimensional space using pixel embedding layers. This MLP is a straightforward linear layer that maps the input data to a higher-dimensional space, transitioning from \(3\) color channels to \(N_{\text{EMBD}}\). This layer consists of a linear transformation followed by a ReLU activation function and is succeeded by a dropout layer.
+    The \(source\) data is embedded into a higher-dimensional space using pixel embedding layers. This multilayer perceptron (MLP) is a straightforward linear layer that maps the input data to a higher-dimensional space, transitioning from \(3\) color channels to \(N_{\text{EMBD}}\). These layers consist of a linear transformation followed by a ReLU activation function and are succeeded by a dropout layer.
 
     Through testing and experimentation, it seems that the optimal configuration for the pixel embedding layer involves a sequence of dimensionality increases. The most effective pathway identified begins by scaling the dimensionality of the input from the original image channels \(C\) to one-fifth of \(N_{\text{EMBD}}\) (\(\frac{1}{5}N_{\text{EMBD}}\)), then increasing it to one-half of \(N_{\text{EMBD}}\) (\(\frac{1}{2}N_{\text{EMBD}}\)) until reaching \(N_{\text{EMBD}}\). The pixel embedding layer is followed by a dropout layer with a dropout rate of 0.2. See \autoref{fig:posEmbend_CIT}.
 
-    It is crucial to highlight the importance of not using a layer normalization (layernorm) layer in the initial few layers of the model. Incorporating a layernorm layer too early results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of red, green, and blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the model's ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
+    It is crucial to highlight the importance of not using a layer normalization layernorm layer in the initial few layers of the model. Incorporating a layernorm layer too early results in outputs that are predominantly black and white. This phenomenon occurs because the color channels \(C\), which are comprised of red, green, and blue, are normalized by the layernorm layer to exhibit uniform values across these channels. As a consequence, this normalization process hinders the model's ability to learn the distinct colors of the pixels, relegating it to only wrong grayscale variations.
 
     \subsubsection{Positional Embedding}
     \label{sec:CIT_PositionalEmbedding}
 
-    The positional embedding layer in this model utilizes a learnable embedding matrix of size \text{BLOCK\_SIZE} times \(N_{\text{EMBD}}\), where \text{BLOCK\_SIZE} represents the context length, or the height of an image. This layer operates by assigning each position within this vertical context a unique embedding vector, thereby mapping the original pixel positions to a high-dimensional space characterized by \(N_{\text{EMBD}}\) dimensions. The integration of these positional embeddings is achieved through their direct addition to the output of the pixel embeddings, effectively enhancing the model's ability to maintain positional awareness across the image height.
+    The positional embedding layer in this model utilizes a learnable embedding matrix of size \text{block\_size} times \(N_{\text{EMBD}}\), where \text{block\_size} represents the context length, or the height of an image. This layer operates by assigning each position within this vertical context a unique embedding vector. Thereby mapping the original pixel positions to a high-dimensional space characterized by \(N_{\text{EMBD}}\) dimensions. The integration of these positional embeddings is achieved through their direct addition to the output of the pixel embeddings, effectively enhancing the model's ability to maintain positional awareness across the image height.
 
 
 \begin{figure}[H]
@@ -87,9 +87,9 @@ def forward(self, source, targets=None):
     In this model, each transformer layer receives the input from the previous layer. The layer then processes this input using a multi-head attention mechanism, which allows the model to capture various aspects of the input at different positions simultaneously. This is followed by a series of normalization and feed-forward layers. All are combined into a block that is repeated multiple times. See \autoref{sec:transformer_layer_Python} for the code snippet.
 
 
-    \subsubsection{Output Layer}
+    \subsubsection{Image Reconstruction Layer}
 
-    The output layer is like the pixel embedding a simple MLP that converts the data back to the original color space. It has the same structure but reversed like the Pixel Embedding layer but with the output dimensionality set to \(3\), representing the red, green, and blue color channels. After the shrinkage of the dimensionality, the output is passed through one final sigmoid to map the resulting colors to 0-1.
+    The image reconstruction layer is like the pixel embedding a simple MLP that converts the data back to the original color space. It has the same structure but reversed like the Pixel Embedding layer but with the output dimensionality set to \(3\), representing the red, green, and blue color channels. After the shrinkage of the dimensionality, the output is passed through one final sigmoid to map the resulting colors to 0-1.
 
     \subsubsection{Sigmoid Compared to Clamp}
     \label{sec:sigmoid_vs_clamp}
@@ -100,18 +100,7 @@ def forward(self, source, targets=None):
     
     \subsubsection{Discoloration in the Model Output}
     
-    The model faces similar discoloration issues as mentioned in section \autoref{sec:sigmoid_vs_clamp} with certain colors. When the model starts with a random pixel, it often struggles to consistently generate the intended pattern in that color or starting pattern. Some evidence suggests that the training set may be too small, as the issue was less noticeable with a larger dataset. Generally, transformers require significantly more data to improve performance \autocite{chen2022dearkd}. However, this problem has not yet been resolved, and further research is needed.
-
-    % \subsubsection{Classification or Regression}
-    % \label{sec:ClassificationOrRegression}
-
-    % To see if the method (Classification / Regression) has a big impact on the performance of the model both methods are tested. For comparison grayscale input and outputs are used. This strategy is particularly advantageous because it minimizes the complexity arising from the vast number of potential output possibilities in classification tasks. With RGB color representation, each pixel can be classified into one of 16,581,375 distinct color combinations (255 possibilities for each of the red, green, and blue channels).
-
-    % Utilizing grayscale input and outputs, simplifies the classification task, reducing the number of potential outcomes to a manageable range. Grayscale images, with their single intensity channel representing luminance, offer a more straightforward basis for analysis. This simplification allows for a more focused evaluation and a faster check if the model performs differently or better.
-
-    % %TODO:
-    % TODO: Add more information about the Classification and Regression Results
-        
+    The model faces similar discoloration issues as mentioned in section \autoref{sec:sigmoid_vs_clamp} with certain colors. When the model starts with a random pixel, it often struggles to consistently generate the intended pattern in that color or starting pattern. Some evidence suggests that the training set may be too small, as the issue was less noticeable with a larger dataset. Generally, transformers require significantly more data to improve performance \autocite{chen2022dearkd}.
 
     \subsubsection{Training the Model}
 
@@ -128,9 +117,9 @@ def forward(self, source, targets=None):
 
     \subsubsection{Experimental Results}
 
-    Multiple experiments are conducted to evaluate the performance of the CIT model. These experiments are designed to test the model's ability to generate images, the quality of the generated images, and the model's performance across different scenarios. The results are analyzed to identify the strengths and weaknesses of the model.
+    Multiple experiments are conducted to evaluate the performance of the CIT model. These experiments are designed to test the model's ability to generate images, the quality of the generated images and the model's performance across different scenarios. The results are analyzed to identify the strengths and weaknesses of the model.
     
-    In each test, the end of the seed pixels are marked with a purple line on the left side of the image.
+    In each test, the end of the seed pixels are marked with a purple line on the left side of the image. All trained models [0-4] can be found in the appendix, see \autoref{sec:trained_models_hyperparameters}.
     
     \begin{itemize}
         \item \textbf{Color test:} To assess the model's capability to generate specific colors, it is challenged with 11 different images with a width of 32 and a height of 128 pixels. Each test image is composed of a single color filling 128 positions in the model's context. The model then generates the next 32 pixels for each image.
@@ -169,7 +158,7 @@ def forward(self, source, targets=None):
             \caption{Color test with four different models}
         \end{figure}
     
-        As shown in the images above, model [0] struggles to generate the correct colors due to the limited size of its old small dataset compared to Models [1-3]. Model [1] generally produces accurate colors but faces difficulties with some. Model [2] generates all colors correctly, but inconsistencies start appearing in column 8. The model may begin changing colors due to its training to recognize patterns such as flowers or carpets in the training data. Model [4] consistently generates the correct colors but begins to create patterns in some columns, potentially indicating that the model is overfitting.
+        As shown in the images above, model [0], which uses the old small dataset, struggles to generate the correct colors due to the limited training data compared to Models [1-3]. Model [1] generally produces accurate colors but faces difficulties with some. Model [2] generates all colors correctly, but inconsistencies start appearing in column 8. The model may begin changing colors due to its training to recognize patterns such as flowers or carpets in the training data. Model [4] consistently generates the correct colors but begins to create patterns in some columns, maybe indicating that the model is overfitting.
  
         \item \textbf{Zebra pattern test:} The second test assesses whether the model can generate a zebra pattern. The model is provided with both a vertical and a horizontal test image featuring black and white stripes, each stripe being 4 pixels wide. It then generates the next 32 pixels. 
 

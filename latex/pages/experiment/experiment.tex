@@ -4,16 +4,16 @@
 
     \subsection{The Foundation of the Models}
 
-    To build the models, a set of Python libraries is utilized, mainly PyTorch, NumPy, TensorBoard, and Einops. PyTorch serves as the core tool for constructing and training the models.
+    To build the models, a set of Python libraries are utilized, mainly PyTorch, NumPy, TensorBoard, and Einops. PyTorch serves as the core tool for constructing and training the models.
     
-    The transformer models code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it has been modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
+    The transformer models code discussed in this thesis is based on a Python script by A. Karpathy named NanoGPT \autocite{nanoGPTkarpathy2023}. This script implements a straightforward LLM (Large Language Model) approach, and it is modified to meet the specific needs of the discussed models. However, the underlying transformer architecture remains unchanged.
     
     \subsubsection{Data Handling}
     \label{sec:DataHandling}
 
     For data management, a script named dataSetCombiner is developed to load and return a combined dataset from specified image folders with optional transformations. The function combines the 33 different sources from multiple directories into a single dataset, also offering the option to apply various image transformations.
     
-    It allows for the selection between the 512x512 and the 1024x1024 pixel dataset, depending on the use case. Parameters can be adjusted to tailor the dataset to specific needs, such as image size, the particular dataset to load, and the option to include multiple instances of the dataset. Furthermore, it can randomly flip images vertically or horizontally to augment the dataset, thereby preventing overfitting and improving model generalization. It also supports color jittering, allowing for random adjustments in image brightness, contrast, saturation, and hue, which introduces further variability into the dataset when needed. Additionally, an option to convert images to grayscale is available.
+    It allows for the selection between the 512x512 and the 1024x1024 pixel dataset, depending on the use case. Parameters can be adjusted to tailor the dataset to specific needs, such as image size, the particular dataset to load, and the option to include multiple instances of the dataset. Furthermore, it can randomly flip images vertically or horizontally to augment the dataset, thereby improving model generalization. It also supports color jittering, allowing for random adjustments in image brightness, contrast, saturation and hue, which introduces further variability into the dataset when needed. Additionally, an option to convert images to grayscale is available.
     
 
 \begin{figure}[H]
@@ -37,7 +37,7 @@
 
     \subsubsection{Multi GPU Training}
     
-    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger, and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
+    To enhance the training speed of larger models, utilizing multiple GPUs can be significantly more efficient. Consequently, the model's code is adapted to support multi-GPU training while maintaining the original core structure. Necessary adjustments were made to the data DataLoader, logger and trainer. For distributed training across multiple GPUs, the PyTorch library Distributed-Data-Parallel (DDP) is used. This implementation draws on guidelines from the PyTorch documentation \autocite{Subramanian2023}. The larger models are trained on an external Slurm cluster equipped with four A100 Tesla GPUs.
 
     \subsubsection{Generation of Assets}
 

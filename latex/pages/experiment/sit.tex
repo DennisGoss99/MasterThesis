@@ -11,7 +11,7 @@
         \label{fig:SpiralImageTransformer}
     \end{figure}
 
-    The visual representation above illustrates the operational steps of the SIT model. Similar to the CIT model, it begins by loading and converting the data. However, it diverges in its method by transforming the data into a spiral format, instead of using the columnar approach. Like its counterpart, this model embeds pixels, from 3 colors to a higher-dimensional embedding space represented by \(N_{\text{EMBD}}\). Positional embeddings are then added. Similar to the CIT model, transformer layers are used to further process the data. The embedded data is finally processed by a (MLP), which converts it back into the original 3-color format. After this step, the spiral-formatted data is restructured into the original image layout.
+    The visual representation above illustrates the operational steps of the SIT model. Similar to the CIT model, it begins by loading and converting the data. However, it diverges in its method by transforming the data into a spiral format, instead of using the columnar approach. Like its counterpart, this model embeds pixels, from 3 colors to a higher-dimensional embedding space represented by \(N_{\text{EMBD}}\). Positional embeddings are then added. Similar to the CIT model, transformer layers are used to further process the data. The embedded data is finally processed by an image reconstruction layer, which converts it back into the original 3-color format. After this step, the spiral-formatted data is restructured into the original image layout.
 
     \subsubsection{Spiral Data Processing}
 
@@ -103,7 +103,7 @@ def create_spiral(n): # n = width and height
 
 \subsubsection{Model Architecture}
 
-Similar to the CIT model, the addition of positional embeddings is handled in the same manner. This is because the data is transformed into a spiral pattern, allowing the addition of positional embeddings to remain unchanged. Additionally, the transformer layer operates identically. For more information on the transformer layer, see the CIT model \autoref{sec:transformer_CIT}.
+Similar to the CIT model, the addition of positional embeddings is handled in the same manner. This is because the data is transformed into a spiral pattern, allowing the addition of positional embeddings to remain unchanged. Additionally, the transformer layer operates identically. For more information on the transformer layer, see \autoref{sec:transformer_CIT}.
 
 
 \subsubsection{Training the Model}
